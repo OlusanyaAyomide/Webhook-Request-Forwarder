@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id               String       @id @default(cuid())
+  name             String
+  slug             String
+  suffix           String
+  pathSegment      String       @unique
+  forwarderBaseUrl String
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  requestLogs      RequestLog[]
+}
+
+model RequestLog {
+  id              String   @id @default(cuid())
+  project         Project  @relation(fields: [projectId], references: [id])
+  projectId       String
+  method          String
+  incomingPath    String
+  fullIncomingUrl String
+  forwardedUrl    String
+  requestHeaders  Json
+  query           String
+  requestBody     Json?
+  responseStatus  Int
+  responseHeaders Json
+  responseBody    Json?
+  durationMs      Int
+  error           String?
+  createdAt       DateTime @default(now())
+}
