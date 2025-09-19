@@ -21,6 +21,8 @@ import Link from "next/link";
 import { DeleteButton } from "./DeleteButton";
 import { EditButton } from "./EditButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectDetailPage({
   params,
 }: {
@@ -65,6 +67,7 @@ export default async function ProjectDetailPage({
               <TableHead>Path</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Duration</TableHead>
+              <TableHead>Event</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
@@ -78,6 +81,7 @@ export default async function ProjectDetailPage({
                 <TableCell>{log.incomingPath}</TableCell>
                 <TableCell>{log.responseStatus}</TableCell>
                 <TableCell>{log.durationMs}ms</TableCell>
+                <TableCell>{(log.requestBody as unknown as any)?.event || "N/A"}</TableCell>
                 <TableCell>{log.createdAt.toLocaleString()}</TableCell>
                 <TableCell>
                   <Link
