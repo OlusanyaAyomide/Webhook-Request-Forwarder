@@ -81,7 +81,7 @@ export default async function ProjectDetailPage({
                 <TableCell>{log.incomingPath}</TableCell>
                 <TableCell>{log.responseStatus}</TableCell>
                 <TableCell>{log.durationMs}ms</TableCell>
-                <TableCell>{(log.requestBody as unknown as any)?.event || "N/A"}</TableCell>
+                <TableCell>{(log.requestBody as unknown as { event: string })?.event || "N/A"}</TableCell>
                 <TableCell>{log.createdAt.toLocaleString()}</TableCell>
                 <TableCell>
                   <Link
