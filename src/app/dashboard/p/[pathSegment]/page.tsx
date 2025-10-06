@@ -32,7 +32,7 @@ export default async function ProjectDetailPage({
   const pageParam = await params
   const project = await prisma.project.findUnique({
     where: { pathSegment: pageParam.pathSegment },
-    include: { requestLogs: { take: 10, orderBy: { createdAt: "desc" } } },
+    include: { requestLogs: { take: 25, orderBy: { createdAt: "desc" } } },
   });
 
   if (!project) {
