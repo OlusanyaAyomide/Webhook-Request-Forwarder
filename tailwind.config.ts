@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import "tw-animate-css";
 
 const config: Config = {
   content: [
@@ -15,6 +16,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require("tw-animate-css"),
+  ],
 }
 export default config
