@@ -1,7 +1,12 @@
+'use client'
+
+import { cn } from "@/lib/utils";
+import { Copy } from "lucide-react";
 import { toast } from "sonner";
 
 export function CopyButton
-  ({ text, customMessage }: { text: string, customMessage?: string }
+  ({ text, customMessage, className }:
+    { text: string, customMessage?: string, className?: string }
 
   ) {
   const handleCopy = async () => {
@@ -16,10 +21,15 @@ export function CopyButton
 
   return (
     <button
+      type="button"
       onClick={handleCopy}
-      className="absolute top-2 right-2 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
+      className={cn(
+        "px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition",
+        className
+      )
+      }
     >
-      Copy
+      <Copy className="w-4 h-4" />
     </button>
   );
 }

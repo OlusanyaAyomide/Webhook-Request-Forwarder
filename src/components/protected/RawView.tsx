@@ -45,7 +45,7 @@ ${formatBody(log.responseBody)}`;
         <h3 className="text-card-foreground text-lg font-semibold">
           Raw HTTP Data
         </h3>
-        <CopyButton text={fullRawData} />
+        <CopyButton text={fullRawData} className="absolute top-2 right-2" />
       </div>
 
       <div className="space-y-6">
@@ -54,7 +54,7 @@ ${formatBody(log.responseBody)}`;
             INCOMING REQUEST
           </h4>
           <div className="relative">
-            <CopyButton text={incomingRequest} />
+            <CopyButton text={incomingRequest} className="absolute top-2 right-2" />
             <pre className="bg-muted p-4 rounded overflow-x-auto border border-[var(--muted)]">
               <code className="text-muted-foreground text-sm whitespace-pre-wrap leading-relaxed">
                 {incomingRequest}
@@ -69,7 +69,7 @@ ${formatBody(log.responseBody)}`;
             FORWARDED TO
           </h4>
           <div className="relative bg-[var(--input)] p-3 rounded-md">
-            <CopyButton text={forwardedTo} />
+            <CopyButton text={forwardedTo} className="absolute top-2 right-2" />
             <pre className="bg-muted p-4 rounded overflow-x-auto border border-[var(--muted)]">
               <code className="text-muted-foreground text-sm whitespace-pre-wrap leading-relaxed">
                 {forwardedTo}
@@ -84,7 +84,7 @@ ${formatBody(log.responseBody)}`;
             RESPONSE
           </h4>
           <div className="relative">
-            <CopyButton text={response} />
+            <CopyButton text={response} className="absolute top-2 right-2" />
             <pre className="bg-muted p-4 rounded overflow-x-auto border border-[var(--muted)]">
               <code className="text-muted-foreground text-sm whitespace-pre-wrap leading-relaxed">
                 {response}

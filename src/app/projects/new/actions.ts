@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 const schema = z.object({
   name: z.string().min(1),
@@ -27,41 +27,73 @@ interface FormState {
   };
 }
 
-export async function createProject(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
-  const validatedFields = schema.safeParse({
-    name: formData.get('name'),
-    forwarderBaseUrl: formData.get('forwarderBaseUrl'),
-  })
 
-  if (!validatedFields.success) {
+const createProjectSchema = z.object({
+  name: z.string().min(1, 'Project name is required'),
+  forwarderBaseUrl: z.string().url('Must be a valid URL'),
+})
+
+type CreateProjectResult = {
+  success: boolean
+  errors?: {
+    name?: string
+    forwarderBaseUrl?: string
+  }
+  error?: string
+}
+
+export async function createProject(
+  formData: FormData
+): Promise<CreateProjectResult> {
+  try {
+    const validatedFields = createProjectSchema.safeParse({
+      name: formData.get('name'),
+      forwarderBaseUrl: formData.get('forwarderBaseUrl'),
+    })
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        errors: validatedFields.error,
+      }
+    }
+
+    const { name, forwarderBaseUrl } = validatedFields.data
+
+    // Generate slug and suffix
+    const slug = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+
+    const suffix = Math.random().toString(36).substring(2, 8)
+    const pathSegment = `${slug}-${suffix}`
+
+    // Create the project
+    await prisma.project.create({
+      data: {
+        name,
+        slug,
+        suffix,
+        pathSegment,
+        forwarderBaseUrl,
+      },
+    })
+
+    revalidatePath('/projects')
+
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
+      success: true,
+    }
+  } catch (error) {
+    console.error('Create project error:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to create project',
     }
   }
-
-  const { name, forwarderBaseUrl } = validatedFields.data
-  const slug = slugify(name)
-  const suffix = Math.random().toString(36).substring(2, 8)
-  const pathSegment = `${slug}-${suffix}`
-
-  await prisma.project.create({
-    data: {
-      name,
-      slug,
-      suffix,
-      pathSegment,
-      forwarderBaseUrl,
-    },
-  })
-
-  redirect('/projects')
-
-  // This return is technically unreachable due to redirect(), but satisfies TypeScript
-  return {};
 }
+
 interface RetryWebhookParams {
   url: string;
   method: string;
@@ -81,6 +113,8 @@ interface RetryWebhookResult {
 export async function retryWebhook(
   params: RetryWebhookParams
 ): Promise<RetryWebhookResult> {
+
+  console.log("Hello in here")
   try {
     const { url, method, headers, body } = params;
 

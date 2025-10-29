@@ -88,7 +88,7 @@ export default function RetryDialog({
 
         <div className="space-y-4">
           {/* Original Request Info */}
-          <Card className="bg-card border-border p-4 mb-3">
+          <Card className="bg-card border-border p-4 mt-10">
             <h4 className="text-sm font-semibold text-card-foreground mb-2">
               Original Request
             </h4>
@@ -134,7 +134,7 @@ export default function RetryDialog({
 
           {retryResult && (
             <div className="space-y-4">
-              <Card className="bg-card border-border p-4">
+              <Card className="bg-card border-border p-4 mt-10">
                 <h4 className="text-sm font-semibold text-card-foreground mb-3">
                   Retry Result
                 </h4>
@@ -160,14 +160,14 @@ export default function RetryDialog({
                 </div>
               </Card>
 
-              <Card className="bg-card border-border p-4">
+              <Card className="bg-card border-border p-4 mt-10">
                 <h4 className="text-sm font-semibold text-card-foreground mb-3">
                   Response Headers
                 </h4>
                 <HeadersViewer headers={retryResult.headers} />
               </Card>
 
-              <Card className="bg-card border-border p-4">
+              <Card className="bg-card border-border p-4 mt-10">
                 <h4 className="text-sm font-semibold text-card-foreground mb-3">
                   Response Body
                 </h4>

@@ -31,6 +31,7 @@ import {
 } from '../../mock/mockData'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function Dashboard() {
   const recentProjects = mockProjects.slice(0, 3)
@@ -39,9 +40,12 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <Button className='flex text-white items-center ml-auto h-10 md:h-12 w-[150px] md:w-[200px] lg:w-240[px] mb-6'>
-          <Plus className='shrink-0 h-5 w-5' />
-          Create New Project
+
+        <Button className='text-white ml-auto h-10 md:h-12 w-[150px] md:w-[200px] lg:w-240[px] mb-6'>
+          <Link href={'/projects/new'} className='flex items-center'>
+            <Plus className='shrink-0 h-5 w-5' />
+            Create New Project
+          </Link>
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

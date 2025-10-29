@@ -22,11 +22,12 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
-import { ArrowLeft, Copy, Check, Eye, Power, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, Eye } from "lucide-react";
 import Pagination from "@/components/protected/Pagination";
-import { DeleteButton } from "./DeleteButton";
-import { EditButton } from "./EditButton";
+
 import { ProjectStats } from "@/components/protected/ProjectStats";
+import ProjectConfiguration from "@/components/protected/ProjectConfiguration";
+import { CopyButton } from "@/components/protected/CopyButton";
 
 
 export const dynamic = "force-dynamic";
@@ -127,9 +128,10 @@ export default async function ProjectDetailPage({
               <code className="flex-1 text-sm bg-muted px-3 py-2 rounded overflow-x-auto font-mono">
                 {incomingUrl}
               </code>
-              <Button size="sm" variant="outline">
-                <Copy className="w-4 h-4" />
-              </Button>
+              <CopyButton
+                text={incomingUrl}
+                customMessage="Incoming Url Copied to clipboard"
+              />
             </div>
           </CardContent>
         </Card>
@@ -144,9 +146,10 @@ export default async function ProjectDetailPage({
               <code className="flex-1 text-sm bg-muted px-3 py-2 rounded overflow-x-auto font-mono">
                 {project.forwarderBaseUrl}
               </code>
-              <Button size="sm" variant="outline">
-                <Copy className="w-4 h-4" />
-              </Button>
+              <CopyButton
+                text={project.forwarderBaseUrl}
+                customMessage="Base Url Copied to clipboard"
+              />
             </div>
           </CardContent>
         </Card>
@@ -294,97 +297,7 @@ export default async function ProjectDetailPage({
         </TabsContent>
 
         <TabsContent value="config" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="project-name">Project Name</Label>
-                <Input
-                  id="project-name"
-                  defaultValue={project.name}
-                  className="mt-2"
-                />
-              </div>
-              <div>
-                <Label htmlFor="forwarder-url">Forwarder URL</Label>
-                <Input
-                  id="forwarder-url"
-                  defaultValue={project.forwarderBaseUrl}
-                  className="mt-2"
-                />
-              </div>
-              <div>
-                <Label htmlFor="path-segment">Path Segment</Label>
-                <Input
-                  id="path-segment"
-                  defaultValue={project.pathSegment}
-                  className="mt-2"
-                  disabled
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Advanced Options</CardTitle>
-              <CardDescription>Configure advanced forwarding behavior</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <Label>Rate Limiting</Label>
-                <p className="text-sm text-muted-foreground mt-1 mb-3">
-                  Control request frequency to prevent abuse
-                </p>
-                <Input
-                  type="number"
-                  placeholder="Max requests per minute"
-                  defaultValue="60"
-                />
-              </div>
-              <div>
-                <Label>Retry Policy</Label>
-                <p className="text-sm text-muted-foreground mt-1 mb-3">
-                  Automatically retry failed requests
-                </p>
-                <Select defaultValue="3">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">No retries</SelectItem>
-                    <SelectItem value="1">1 retry</SelectItem>
-                    <SelectItem value="3">3 retries</SelectItem>
-                    <SelectItem value="5">5 retries</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Log Retention</Label>
-                <p className="text-sm text-muted-foreground mt-1 mb-3">
-                  How long to keep request logs
-                </p>
-                <Select defaultValue="30d">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="7d">7 Days</SelectItem>
-                    <SelectItem value="30d">30 Days</SelectItem>
-                    <SelectItem value="90d">90 Days</SelectItem>
-                    <SelectItem value="forever">Forever</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="pt-4">
-                <Button className="bg-[var(--primary)] hover:bg-[var(--primary)]/90">
-                  Save Changes
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ProjectConfiguration project={project} />
         </TabsContent>
 
         <TabsContent value="stats">

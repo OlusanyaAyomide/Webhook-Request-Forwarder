@@ -44,7 +44,7 @@ export default async function DashboardPage({
           Manage and monitor your projects
         </p>
         <Button asChild className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 h-10 md:h-12 w-[150px] md:w-[200px] lg:w-240[px] mb-6">
-          <Link href="/dashboard/projects/new">
+          <Link href="/projects/new">
             <Plus className="mr-2 h-5 w-5 shrink-0 text-white" />
             <span className="text-white">New Project</span>
           </Link>
