@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 
+
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -26,6 +27,8 @@ import {
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import { useSidebar } from "../ui/sidebar";
+import { useClerk, useUser } from "@clerk/nextjs";
+import { ProgressLink } from "./ProgressLink";
 
 export default function AppHeader() {
   const pathname = usePathname();
@@ -38,6 +41,10 @@ export default function AppHeader() {
 
   const { open } = useSidebar()
 
+  const { user } = useUser();
+
+  const { signOut } = useClerk();
+
   const segments = pathname.split("/").filter(Boolean);
   const pageTitle =
     segments.length === 0
@@ -47,6 +54,12 @@ export default function AppHeader() {
         .replace(/\b\w/g, (c) => c.toUpperCase());
 
   const showBackButton = segments.length > 1;
+
+  const initials = () => {
+    return (user?.firstName && user.lastName) ?
+      user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase()
+      : "N/A"
+  }
 
   useEffect(() => {
     if (isMounted) return
@@ -101,7 +114,7 @@ export default function AppHeader() {
         }
         {/* Avatar */}
         <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted text-sm font-semibold text-foreground">
-          OA
+          {initials()}
         </div>
 
         {/* Menu toggle */}
@@ -128,12 +141,12 @@ export default function AppHeader() {
             <DropdownMenuSeparator />
 
             {/* Settings */}
-            <Link href="/settings">
+            <ProgressLink href="/settings">
               <DropdownMenuItem className="cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
                 View More (Settings)
               </DropdownMenuItem>
-            </Link>
+            </ProgressLink>
 
             <DropdownMenuSeparator />
 
@@ -167,8 +180,7 @@ export default function AppHeader() {
             <Button
               className="h-10 md:h-12 md:w-[220px] text-white bg-[var(--primary)]"
               onClick={() => {
-                setLogoutDialogOpen(false);
-
+                signOut({ redirectUrl: "/sign-in" })
               }}
             >
               Logout

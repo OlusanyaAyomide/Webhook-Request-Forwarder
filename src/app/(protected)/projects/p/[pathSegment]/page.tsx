@@ -18,16 +18,16 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Link from "next/link";
 import { ArrowLeft, Copy, Eye } from "lucide-react";
 import Pagination from "@/components/protected/Pagination";
 
 import { ProjectStats } from "@/components/protected/ProjectStats";
 import ProjectConfiguration from "@/components/protected/ProjectConfiguration";
 import { CopyButton } from "@/components/protected/CopyButton";
+import { currentUser } from "@clerk/nextjs/server";
+import { ProgressLink } from "@/components/protected/ProgressLink";
 
 
 export const dynamic = "force-dynamic";
@@ -44,21 +44,30 @@ export default async function ProjectDetailPage({
   const page = Number(searchParam.page) || 1;
   const pageSize = 20;
   const skip = (page - 1) * pageSize;
+  const user = await currentUser()
 
 
   const [project, totalLogs] = await prisma.$transaction(async (tx) => {
     const currentProject = await tx.project.findUnique({
-      where: { pathSegment: pageParam.pathSegment },
+      where: {
+        pathSegment: pageParam.pathSegment,
+        User: {
+          email: user?.emailAddresses[0].emailAddress
+        }
+      },
       include: {
         requestLogs: {
           skip,
           take: pageSize,
           orderBy: { createdAt: "desc" },
         },
+
       },
     })
     const currenttotalLogs = await tx.requestLog.count({
-      where: { projectId: currentProject?.id },
+      where: {
+        projectId: currentProject?.id
+      },
     })
 
     return [
@@ -92,10 +101,10 @@ export default async function ProjectDetailPage({
       {/* Back Button & Header */}
       <div>
         <Button variant="ghost" asChild className="mb-4 -ml-2">
-          <Link href="/projects">
+          <ProgressLink href="/projects">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Projects
-          </Link>
+          </ProgressLink>
         </Button>
         <div className="flex items-start justify-between">
           <div>
@@ -266,10 +275,10 @@ export default async function ProjectDetailPage({
                           asChild
                           className="hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]"
                         >
-                          <Link href={`/projects/p/${project.pathSegment}/requests/${log.id}`}>
+                          <ProgressLink href={`/projects/p/${project.pathSegment}/requests/${log.id}`}>
                             <Eye className="h-4 w-4 mr-2" />
                             View
-                          </Link>
+                          </ProgressLink>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -283,7 +292,6 @@ export default async function ProjectDetailPage({
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
-                baseUrl={`/projects/p/${project.pathSegment}`}
               />
             )}
           </div>

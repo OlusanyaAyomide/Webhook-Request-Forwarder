@@ -3,8 +3,6 @@
 import { ReactNode } from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-import { SidebarProvider } from "../ui/sidebar"
-import AppSideBarContent from "./AppSideBarContent"
 
 export default function ClientProvider({ children }: { children: ReactNode }) {
   return (
@@ -14,11 +12,8 @@ export default function ClientProvider({ children }: { children: ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <SidebarProvider>
-        <AppSideBarContent>
-          {children}
-        </AppSideBarContent>
-      </SidebarProvider>
+      {children}
+
     </NextThemesProvider>
   )
 }

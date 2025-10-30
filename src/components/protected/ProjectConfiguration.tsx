@@ -8,7 +8,7 @@ import { Project } from '@prisma/client'
 import { Button } from '../ui/button'
 import { Switch } from '../ui/switch'
 import { toast } from 'sonner'
-import { updateBasicSettings, updateLiveUrl, toggleLiveStatus } from '@/app/projects/p/[pathSegment]/actions'
+import { updateBasicSettings, updateLiveUrl, toggleLiveStatus } from '@/app/(protected)/projects/p/[pathSegment]/actions'
 import { Loader2 } from 'lucide-react'
 
 export default function ProjectConfiguration({ project }: { project: Project }) {

@@ -1,16 +1,26 @@
+// components/pagination.tsx
+'use client'
 
-import Link from "next/link";
 import { Button } from "../ui/button";
+import { useRouter, usePathname } from 'next/navigation'
+import NProgress from 'nprogress'
 
 export default function Pagination({
   currentPage,
   totalPages,
-  baseUrl
 }: {
   currentPage: number;
   totalPages: number;
-  baseUrl: string;
 }) {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handlePageChange = (page: number) => {
+    NProgress.start()
+    const url = `${pathname}?page=${page}`
+    router.push(url, { scroll: false })
+  }
+
   return (
     <div className="flex items-center justify-between px-2 py-4 border-t">
       <div className="text-sm text-muted-foreground">
@@ -21,25 +31,17 @@ export default function Pagination({
           variant="outline"
           size="sm"
           disabled={currentPage <= 1}
-          asChild={currentPage > 1}
+          onClick={() => handlePageChange(currentPage - 1)}
         >
-          {currentPage > 1 ? (
-            <Link href={`${baseUrl}?page=${currentPage - 1}`}>Previous</Link>
-          ) : (
-            <span className="opacity-70">Previous</span>
-          )}
+          Previous
         </Button>
         <Button
           variant="outline"
           size="sm"
           disabled={currentPage >= totalPages}
-          asChild={currentPage < totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
         >
-          {currentPage < totalPages ? (
-            <Link href={`${baseUrl}?page=${currentPage + 1}`}>Next</Link>
-          ) : (
-            <span>Next</span>
-          )}
+          Next
         </Button>
       </div>
     </div>

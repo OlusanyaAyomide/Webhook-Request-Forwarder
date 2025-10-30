@@ -113,3 +113,18 @@ button {
     @apply bg-background text-foreground;
   }
 }
+
+#nprogress .bar {
+  background: var() !important;
+  height: 3px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #7f22fe, 0 0 5px #7f22fe !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #7f22fe !important;
+  border-left-color: #7f22fe !important;
+  display: none;
+}

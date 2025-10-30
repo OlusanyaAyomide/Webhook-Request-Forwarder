@@ -26,9 +26,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import AppHeader from "./AppHeader";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import { useUser } from '@clerk/nextjs';
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ProgressLink } from "./ProgressLink";
+
 
 export default function AppSideBarContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
+  const { user } = useUser();
 
   const { open, setOpen } = useSidebar()
 
@@ -56,6 +62,12 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
     if (isMounted) return
     setIsMounted(true)
   }, [isMounted])
+
+  const initials = () => {
+    return (user?.firstName && user.lastName) ?
+      user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase()
+      : "N/A"
+  }
 
   return (
     <div className="w-full relative">
@@ -103,7 +115,7 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
 
                     return (
                       <SidebarMenuItem key={href} className="mb-5">
-                        <Link href={href} className="block">
+                        <ProgressLink href={href} className="block">
                           <Tooltip delayDuration={100}>
                             <TooltipProvider>
                               <TooltipTrigger asChild>
@@ -134,7 +146,7 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
                               </TooltipTrigger>
                             </TooltipProvider>
                           </Tooltip>
-                        </Link>
+                        </ProgressLink>
                       </SidebarMenuItem>
                     );
                   })}
@@ -148,16 +160,18 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
               open ? "p-4 w-full gap-3 " : "p-2 w-6 verflow-hidden"
             )}
           >
-            {/* Avatar Circle with Initials */}
-            <div className="flex items-center justify-center rounded-full bg-[var(--primary)] font-semibold w-10 h-10 shrink-0">
-              O A
-            </div>
+            <Avatar>
+              <AvatarFallback className="bg-[var(--primary)] h-10 w-10 text-white">
+                {initials()}
+              </AvatarFallback>
+              <AvatarImage src={user?.imageUrl} />
+            </Avatar>
 
             {/* User Details (only when open) */}
             {open && (
               <div className="flex flex-col transition-all duration-500 overflow-hidden">
                 <span className="text-sm font-semibold">
-                  {"Olusanya Ayomide"}
+                  {user?.firstName} {user?.lastName}
                 </span>
                 <span className="text-xs truncate max-w-[140px]">
                   olusanyaayomide76@gmail.com

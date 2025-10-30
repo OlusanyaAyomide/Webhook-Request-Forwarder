@@ -18,7 +18,7 @@ import HeadersViewer from "./ColumnViewer";
 import JsonViewer from "./JsonViewer";
 import { RequestLog } from "@prisma/client";
 import { Badge } from "../ui/badge";
-import { retryWebhook } from "@/app/projects/new/actions";
+import { retryWebhook } from "@/app/(protected)/projects/new/actions";
 
 
 interface RetryResult {

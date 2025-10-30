@@ -8,9 +8,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import { Plus, Eye } from "lucide-react";
 import Pagination from "@/components/protected/Pagination";
+import { currentUser } from "@clerk/nextjs/server";
+import { ProgressLink } from "@/components/protected/ProgressLink";
 
 export const dynamic = "force-dynamic";
 
@@ -20,17 +21,29 @@ export default async function DashboardPage({
 }: {
   searchParams: { page?: string }
 }) {
+  const user = await currentUser()
   const page = Number(await searchParams?.page) || 1;
   const pageSize = 10;
   const skip = (page - 1) * pageSize;
 
   const [projects, totalCount] = await Promise.all([
     prisma.project.findMany({
+      where: {
+        User: {
+          email: user?.emailAddresses[0].emailAddress
+        }
+      },
       skip,
       take: pageSize,
       orderBy: { createdAt: "desc" },
     }),
-    prisma.project.count(),
+    prisma.project.count({
+      where: {
+        User: {
+          email: user?.emailAddresses[0].emailAddress
+        }
+      },
+    }),
   ]);
 
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -44,10 +57,10 @@ export default async function DashboardPage({
           Manage and monitor your projects
         </p>
         <Button asChild className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 h-10 md:h-12 w-[150px] md:w-[200px] lg:w-240[px] mb-6">
-          <Link href="/projects/new">
+          <ProgressLink href="/projects/new">
             <Plus className="mr-2 h-5 w-5 shrink-0 text-white" />
             <span className="text-white">New Project</span>
-          </Link>
+          </ProgressLink>
         </Button>
       </div>
 
@@ -118,10 +131,10 @@ export default async function DashboardPage({
                       asChild
                       className="hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]"
                     >
-                      <Link href={`/projects/p/${project.pathSegment}`}>
+                      <ProgressLink href={`/projects/p/${project.pathSegment}`}>
                         <Eye className="h-4 w-4 mr-2" />
                         View
-                      </Link>
+                      </ProgressLink>
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -135,7 +148,6 @@ export default async function DashboardPage({
           <Pagination
             currentPage={page}
             totalPages={totalPages}
-            baseUrl="/projects"
           />
         )}
       </div>

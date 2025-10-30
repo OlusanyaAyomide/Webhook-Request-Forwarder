@@ -3,6 +3,7 @@
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { currentUser } from '@clerk/nextjs/server'
 
 const schema = z.object({
   name: z.string().min(1),
@@ -51,10 +52,24 @@ export async function createProject(
       forwarderBaseUrl: formData.get('forwarderBaseUrl'),
     })
 
+    const user = await currentUser()
+
     if (!validatedFields.success) {
       return {
         success: false,
         errors: validatedFields.error,
+      }
+    }
+
+    const userObject = await prisma.user.findUnique({
+      where: {
+        email: user?.emailAddresses[0].emailAddress
+      }
+    })
+
+    if (!userObject) {
+      return {
+        success: false,
       }
     }
 
@@ -77,6 +92,7 @@ export async function createProject(
         suffix,
         pathSegment,
         forwarderBaseUrl,
+        userId: userObject.id
       },
     })
 

@@ -2,14 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
 import RequestDetailPage from "@/components/protected/RequestDetail";
+import { currentUser } from "@clerk/nextjs/server";
 
-function JsonViewer({ json }: { json: object }) {
-  return (
-    <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto">
-      {JSON.stringify(json, null, 2)}
-    </pre>
-  );
-}
 
 export default async function ViewRequestDetailPage({
   params,
@@ -19,8 +13,17 @@ export default async function ViewRequestDetailPage({
 }) {
 
   const reqParams = await params
+
+  const user = await currentUser()
   const log = await prisma.requestLog.findUnique({
-    where: { id: reqParams.requestId },
+    where: {
+      id: reqParams.requestId,
+      project: {
+        User: {
+          email: user?.emailAddresses[0].emailAddress
+        }
+      }
+    },
   });
 
   if (!log) {
