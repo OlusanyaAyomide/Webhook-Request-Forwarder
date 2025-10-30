@@ -29,9 +29,106 @@ interface FormState {
 }
 
 
+
+const createAppSchema = z.object({
+  name: z.string().min(1, 'App name is required'),
+  url: z.string().url('Must be a valid URL'),
+})
+
+type CreateAppResult = {
+  success: boolean
+  errors?: Record<string, string>
+  error?: string
+  data?: {
+    id: string
+    name: string
+    url: string
+  }
+}
+
+export async function createApp(
+  formData: FormData
+): Promise<CreateAppResult> {
+
+  const user = await currentUser()
+
+  const userObj = await prisma.user.findUniqueOrThrow({
+    where: { email: user?.emailAddresses[0].emailAddress }
+  })
+
+  console.log(formData.get("name"))
+
+  try {
+    const validatedFields = createAppSchema.safeParse({
+      name: formData.get('name'),
+      url: formData.get('url'),
+    })
+
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        errors: { name: "Ensure data passed is valid", url: "Ensure data passed is valid" },
+      }
+    }
+
+    const { name, url } = validatedFields.data
+
+    // Create the app
+    const app = await prisma.apps.create({
+      data: {
+        name,
+        url,
+        userId: userObj.id,
+        isLive: true,
+      },
+    })
+
+    revalidatePath('/projects/new')
+    revalidatePath('/projects')
+
+    return {
+      success: true,
+      data: {
+        id: app.id,
+        name: app.name,
+        url: app.url,
+      },
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to create app',
+    }
+  }
+}
+
+export async function getApps() {
+  try {
+    const apps = await prisma.apps.findMany({
+      where: {
+        isLive: true,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+      select: {
+        id: true,
+        name: true,
+        url: true,
+      },
+    })
+
+    return apps
+  } catch (error) {
+    return []
+  }
+}
+
 const createProjectSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
   forwarderBaseUrl: z.string().url('Must be a valid URL'),
+  appId: z.string().min(5)
 })
 
 type CreateProjectResult = {
@@ -39,6 +136,7 @@ type CreateProjectResult = {
   errors?: {
     name?: string
     forwarderBaseUrl?: string
+    appId?: string
   }
   error?: string
 }
@@ -50,11 +148,13 @@ export async function createProject(
     const validatedFields = createProjectSchema.safeParse({
       name: formData.get('name'),
       forwarderBaseUrl: formData.get('forwarderBaseUrl'),
+      appId: formData.get("appId")
     })
 
     const user = await currentUser()
 
     if (!validatedFields.success) {
+
       return {
         success: false,
         errors: validatedFields.error,
@@ -84,13 +184,14 @@ export async function createProject(
     const suffix = Math.random().toString(36).substring(2, 8)
     const pathSegment = `${slug}-${suffix}`
 
-    // Create the project
+
     await prisma.project.create({
       data: {
         name,
         slug,
         suffix,
         pathSegment,
+        appId: validatedFields.data.appId,
         forwarderBaseUrl,
         userId: userObject.id
       },

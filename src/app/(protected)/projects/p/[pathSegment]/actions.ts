@@ -1,32 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-
-export async function deleteProject(formData: FormData) {
-
-  console.log('rhereee')
-  const pathSegment = formData.get('pathSegment') as string
-
-  const proj = await prisma.project.findFirst({
-    where: { pathSegment }
-  })
-
-  await prisma.requestLog.deleteMany({
-    where: {
-      projectId: proj?.id
-    }
-  })
-
-  await prisma.project.delete({
-    where: { pathSegment },
-  })
-
-
-  redirect('/dashboard')
-}
 
 interface FormState {
   errors?: {
@@ -131,28 +107,30 @@ export async function updateBasicSettings(
   }
 }
 
-export async function updateLiveUrl(
+
+export async function updateApplication(
   pathSegment: string,
-  formData: FormData
+  appId: string | null
 ): Promise<ActionResult> {
   try {
-    const liveUrl = formData.get('liveUrl') as string
+    // Validate that the app exists if appId is provided
+    if (appId) {
+      const appExists = await prisma.apps.findUnique({
+        where: { id: appId },
+      })
 
-    const validatedFields = liveUrlSchema.safeParse({
-      liveUrl: liveUrl || undefined,
-    })
-
-    if (!validatedFields.success) {
-      return {
-        success: false,
-        error: 'Invalid fields passed',
+      if (!appExists) {
+        return {
+          success: false,
+          error: 'Selected application does not exist',
+        }
       }
     }
 
     await prisma.project.update({
       where: { pathSegment },
       data: {
-        liveUrl: liveUrl || null,
+        appId: appId,
       },
     })
 
@@ -160,13 +138,14 @@ export async function updateLiveUrl(
 
     return { success: true }
   } catch (error) {
-    console.error('Update live URL error:', error)
+    console.error('Update application error:', error)
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to update live URL',
+      error: error instanceof Error ? error.message : 'Failed to update application',
     }
   }
 }
+
 
 export async function toggleLiveStatus(
   pathSegment: string,
@@ -188,6 +167,36 @@ export async function toggleLiveStatus(
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to toggle live status',
+    }
+  }
+}
+
+export async function deleteProject(
+  pathSegment: string
+): Promise<ActionResult> {
+  try {
+    // First, delete all related request logs
+    await prisma.requestLog.deleteMany({
+      where: {
+        project: {
+          pathSegment
+        }
+      },
+    })
+
+    // Then delete the project itself
+    await prisma.project.delete({
+      where: { pathSegment },
+    })
+
+    revalidatePath('/projects')
+
+    return { success: true }
+  } catch (error) {
+    console.error('Delete project error:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to delete project',
     }
   }
 }

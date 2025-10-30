@@ -9,6 +9,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import ClientProvider from "@/components/protected/ClientProvider";
 import { NavigationEvents } from "@/components/protected/NavigationEvents";
+import MobileBottomNav from "@/components/protected/MobileBottomNav";
+import { MobileWarning } from "@/components/protected/MobileViewWarning";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +43,8 @@ export default function RootLayout({
           </ClientProvider>
         </ClerkProvider>
         <Toaster />
+        <MobileBottomNav />
+        <MobileWarning />
         <NavigationEvents />
       </body>
     </html>

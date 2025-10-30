@@ -40,10 +40,11 @@ async function handler(
   const pathSegment = reqParam.pathSegment as string
   const rest = context.params.rest as string[] | undefined
 
-  console.log(pathSegment)
-
   const project = await prisma.project.findUnique({
     where: { pathSegment },
+    include: {
+      app: true
+    }
   });
 
   if (!project) {
@@ -52,7 +53,7 @@ async function handler(
 
   const incomingPath = `/${rest?.join("/") || ""}`;
   const searchParams = req.nextUrl.search;
-  const forwardedUrl = `${project.forwarderBaseUrl}${incomingPath}${searchParams}`;
+  const forwardedUrl = `${project.isLive ? project.app?.url : project.forwarderBaseUrl}${incomingPath}${searchParams}`;
 
   const headers = new Headers(req.headers);
   hopByHopHeaders.forEach((h) => headers.delete(h));

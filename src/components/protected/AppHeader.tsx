@@ -21,11 +21,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
+
 import { useSidebar } from "../ui/sidebar";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { ProgressLink } from "./ProgressLink";
@@ -35,7 +34,6 @@ export default function AppHeader() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const [liveMode, setLiveMode] = useState(false);
 
   const [isMounted, setIsMounted] = useState(false)
 
@@ -69,7 +67,7 @@ export default function AppHeader() {
   return (
     <div
       className={clsx(
-        "fixed top-0 right-0 z-30 border-b bg-background px-4 flex items-center justify-between transition-all",
+        "fixed top-0 right-0 z-30 border-b bg-background px-4 flex items-center justify-between",
         "h-[85px] border-b-[var(--muted)]",
         "w-full",
         open ? "md:w-[calc(100vw-200px)] lg:w-[calc(100vw-280px)]" : "md:w-[calc(100vw-70px)] lg:w-[calc(100vw-70px)]"
@@ -125,34 +123,17 @@ export default function AppHeader() {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-60">
-            {/* Switch to live mode */}
-            <div className="flex items-center justify-between px-2 py-1.5">
-              <Label htmlFor="live-mode" className="text-sm text-foreground">
-                Live Mode
-              </Label>
-              <Switch
-                id="live-mode"
-                checked={liveMode}
-                onCheckedChange={(checked) => setLiveMode(checked)}
-              />
-            </div>
-
-            <DropdownMenuSeparator />
-
+          <DropdownMenuContent align="end" className="w-60 p-0 border-[var(--input)]">
             {/* Settings */}
             <ProgressLink href="/settings">
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer h-12 hover:bg-[var(--primary)]/5">
                 <Settings className="mr-2 h-4 w-4" />
                 View More (Settings)
               </DropdownMenuItem>
             </ProgressLink>
-
-            <DropdownMenuSeparator />
-
             {/* Logout */}
             <DropdownMenuItem
-              className="text-red-600 focus:text-red-600 cursor-pointer"
+              className="text-red-600 focus:text-red-600 cursor-pointer h-12 hover:bg-[var(--primary)]/5"
               onClick={() => setLogoutDialogOpen(true)}
             >
               <LogOut className="mr-2 h-4 w-4" />

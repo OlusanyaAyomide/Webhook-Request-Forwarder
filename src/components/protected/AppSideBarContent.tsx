@@ -93,7 +93,7 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
                   variant="ghost"
                   size="icon"
                   className={
-                    `rounded-full transition-all z-40 relative duration-500 hover:bg-[var(--primary)]/10
+                    `rounded-full transition-all z-40 relative duration-500 hover:bg-[var(--primary)]/5
                     ${open ? "-translate-x-2" : "-translate-x-9 translate-y-12"}
                     `
                   }

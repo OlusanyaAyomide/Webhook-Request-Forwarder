@@ -21,11 +21,11 @@ model Project {
   updatedAt        DateTime     @updatedAt
   requestLogs      RequestLog[]
 
-  isLive    Boolean  @default(false)
-  User      User     @relation(fields: [userId], references: [id])
-  userId    String
-  LiveUrl   LiveUrl? @relation(fields: [liveUrlId], references: [id])
-  liveUrlId String?
+  isLive Boolean @default(false)
+  User   User    @relation(fields: [userId], references: [id])
+  userId String
+  app    Apps?   @relation(fields: [appId], references: [id])
+  appId  String?
 }
 
 model RequestLog {
@@ -55,11 +55,16 @@ model User {
   signed_up_at      DateTime  @default(now())
   last_signed_in_at DateTime?
   projects          Project[]
+  apps              Apps[]
 }
 
-model LiveUrl {
+model Apps {
   id         String    @id @default(cuid())
+  name       String    @default("Coffer")
   url        String
   created_at DateTime  @default(now())
+  isLive     Boolean
   projects   Project[]
+  User       User?     @relation(fields: [userId], references: [id])
+  userId     String?
 }

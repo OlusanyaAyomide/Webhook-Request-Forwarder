@@ -167,7 +167,7 @@ export default function RetryDialog({
                 <HeadersViewer headers={retryResult.headers} />
               </Card>
 
-              <Card className="bg-card border-border p-4 mt-10">
+              <Card className="bg-card border-border p-4 mt-10 overflow-scroll">
                 <h4 className="text-sm font-semibold text-card-foreground mb-3">
                   Response Body
                 </h4>

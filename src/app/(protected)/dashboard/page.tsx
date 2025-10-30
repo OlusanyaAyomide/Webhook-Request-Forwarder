@@ -11,7 +11,6 @@ import {
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import LineChartContainer from '@/components/protected/LineChartContainer'
 import PieChartContainer from '@/components/protected/PieChartContainer'
 import { currentUser } from '@clerk/nextjs/server'
@@ -58,7 +57,7 @@ export default async function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <Button className="text-white ml-auto h-10 md:h-12 w-[150px] md:w-[200px] lg:w-240[px] mb-6">
+        <Button className="text-white ml-auto h-10 md:h-12 w-[170px] md:w-[200px] lg:w-240[px] mb-6">
           <ProgressLink href={'/projects/new'} className="flex items-center">
             <Plus className="shrink-0 h-5 w-5" />
             Create New Project

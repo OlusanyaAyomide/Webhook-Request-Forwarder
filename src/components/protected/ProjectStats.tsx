@@ -3,36 +3,69 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-interface ProjectStatsProps {
-  projectId: string;
+
+interface StatsData {
+  totalRequests: number;
+  successRate: number;
+  avgDuration: number;
+  failedRequests: number;
+  requestsOverTime: Array<{
+    date: string;
+    requests: number;
+    success: number;
+  }>;
+  statusCodes: Array<{
+    code: string;
+    count: number;
+  }>;
+  responseTimeDistribution: {
+    fast: number;
+    average: number;
+    slow: number;
+  };
+  topPaths: Array<{
+    path: string;
+    count: number;
+  }>;
 }
 
-export function ProjectStats({ projectId }: ProjectStatsProps) {
-  // Mock data - replace with actual data fetching
-  const requestsOverTime = [
-    { date: 'Oct 20', requests: 234, success: 228 },
-    { date: 'Oct 21', requests: 298, success: 285 },
-    { date: 'Oct 22', requests: 321, success: 310 },
-    { date: 'Oct 23', requests: 276, success: 268 },
-    { date: 'Oct 24', requests: 345, success: 335 },
-    { date: 'Oct 25', requests: 289, success: 281 },
-    { date: 'Oct 26', requests: 156, success: 152 },
-  ];
+interface ProjectStatsProps {
+  stats: StatsData;
+}
 
-  const statusCodes = [
-    { code: '200', count: 1456 },
-    { code: '201', count: 234 },
-    { code: '400', count: 23 },
-    { code: '404', count: 12 },
-    { code: '500', count: 34 },
-  ];
-
-  const stats = {
-    totalRequests: 1919,
-    successRate: 96.8,
-    avgDuration: 234,
-    failedRequests: 89,
-  };
+export function ProjectStats({ stats }: ProjectStatsProps) {
+  // Show empty state if no requests
+  if (stats.totalRequests === 0) {
+    return (
+      <div className="space-y-6 pb-20">
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16">
+            <div className="rounded-full bg-muted p-6 mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-muted-foreground"
+              >
+                <path d="M3 3v18h18" />
+                <path d="m19 9-5 5-4-4-3 3" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No Request Data Yet</h3>
+            <p className="text-muted-foreground text-center max-w-md">
+              Start sending requests to your webhook endpoint to see analytics and statistics here.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-20">
@@ -90,7 +123,7 @@ export function ProjectStats({ projectId }: ProjectStatsProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={requestsOverTime}>
+            <LineChart data={stats.requestsOverTime}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
               <XAxis
                 dataKey="date"
@@ -137,7 +170,7 @@ export function ProjectStats({ projectId }: ProjectStatsProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={statusCodes}>
+            <BarChart data={stats.statusCodes}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
               <XAxis
                 dataKey="code"
@@ -176,26 +209,26 @@ export function ProjectStats({ projectId }: ProjectStatsProps) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Fast (&lt;100ms)</span>
-                <span className="text-sm font-medium">45%</span>
+                <span className="text-sm font-medium">{stats.responseTimeDistribution.fast}%</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                <div className="bg-green-500 h-2 rounded-full" style={{ width: `${stats.responseTimeDistribution.fast}%` }}></div>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Average (100-500ms)</span>
-                <span className="text-sm font-medium">42%</span>
+                <span className="text-sm font-medium">{stats.responseTimeDistribution.average}%</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '42%' }}></div>
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${stats.responseTimeDistribution.average}%` }}></div>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Slow (&gt;500ms)</span>
-                <span className="text-sm font-medium">13%</span>
+                <span className="text-sm font-medium">{stats.responseTimeDistribution.slow}%</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '13%' }}></div>
+                <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${stats.responseTimeDistribution.slow}%` }}></div>
               </div>
             </div>
           </CardContent>
@@ -203,24 +236,22 @@ export function ProjectStats({ projectId }: ProjectStatsProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Top Event Types</CardTitle>
+            <CardTitle>Top Request Paths</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {[
-                { event: 'payment.completed', count: 456 },
-                { event: 'user.created', count: 234 },
-                { event: 'order.fulfilled', count: 189 },
-                { event: 'subscription.updated', count: 145 },
-                { event: 'refund.processed', count: 89 },
-              ].map((item) => (
-                <div key={item.event} className="flex items-center justify-between">
-                  <span className="text-sm font-mono">{item.event}</span>
-                  <span className="text-sm font-medium text-muted-foreground">
-                    {item.count}
-                  </span>
-                </div>
-              ))}
+              {stats.topPaths.length > 0 ? (
+                stats.topPaths.map((item) => (
+                  <div key={item.path} className="flex items-center justify-between">
+                    <span className="text-sm font-mono truncate max-w-[200px]">{item.path}</span>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {item.count}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No requests yet</p>
+              )}
             </div>
           </CardContent>
         </Card>

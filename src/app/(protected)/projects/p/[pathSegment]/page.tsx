@@ -17,70 +17,170 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Copy, Eye } from "lucide-react";
+import { ArrowLeft, Eye } from "lucide-react";
 import Pagination from "@/components/protected/Pagination";
-
 import { ProjectStats } from "@/components/protected/ProjectStats";
 import ProjectConfiguration from "@/components/protected/ProjectConfiguration";
 import { CopyButton } from "@/components/protected/CopyButton";
 import { currentUser } from "@clerk/nextjs/server";
 import { ProgressLink } from "@/components/protected/ProgressLink";
-
+import { getProjectStats } from "./stat.actions";
+import { RequestLogsFilter } from "@/components/protected/RequestLogsFilter";
 
 export const dynamic = "force-dynamic";
+
+interface SearchParams {
+  page?: string;
+  search?: string;
+  method?: string;
+  status?: string;
+}
 
 export default async function ProjectDetailPage({
   params,
   searchParams,
 }: {
   params: any;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<SearchParams>;
 }) {
   const pageParam = await params;
-  const searchParam = await searchParams
+  const searchParam = await searchParams;
+
   const page = Number(searchParam.page) || 1;
+  const search = searchParam.search || "";
+  const method = searchParam.method || "all";
+  const status = searchParam.status || "all-status";
+
   const pageSize = 20;
   const skip = (page - 1) * pageSize;
-  const user = await currentUser()
+  const user = await currentUser();
 
+  const userEmail = user?.emailAddresses[0].emailAddress;
 
-  const [project, totalLogs] = await prisma.$transaction(async (tx) => {
+  if (!userEmail) {
+    return notFound();
+  }
+
+  // Build filter conditions
+  const whereConditions: any = {
+    project: {
+      pathSegment: pageParam.pathSegment,
+      User: {
+        email: userEmail,
+      },
+    },
+  };
+
+  // Add search filter
+  if (search) {
+    whereConditions.OR = [
+      { incomingPath: { contains: search, mode: "insensitive" } },
+      { fullIncomingUrl: { contains: search, mode: "insensitive" } },
+      { forwardedUrl: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  // Add method filter
+  if (method !== "all") {
+    whereConditions.method = method;
+  }
+
+  // Add status filter
+  if (status !== "all-status") {
+    if (status === "2xx") {
+      whereConditions.responseStatus = { gte: 200, lt: 300 };
+    } else if (status === "4xx") {
+      whereConditions.responseStatus = { gte: 400, lt: 500 };
+    } else if (status === "5xx") {
+      whereConditions.responseStatus = { gte: 500, lt: 600 };
+    }
+  }
+
+  const [project, totalLogs, apps] = await prisma.$transaction(async (tx) => {
     const currentProject = await tx.project.findUnique({
       where: {
         pathSegment: pageParam.pathSegment,
         User: {
-          email: user?.emailAddresses[0].emailAddress
-        }
+          email: userEmail,
+        },
       },
       include: {
-        requestLogs: {
-          skip,
-          take: pageSize,
-          orderBy: { createdAt: "desc" },
-        },
+        app: {
+          select: {
+            url: true
+          }
+        }
+      }
+    });
 
-      },
-    })
-    const currenttotalLogs = await tx.requestLog.count({
+    if (!currentProject) {
+      return [null, 0, []];
+    }
+
+    // Get filtered request logs
+    const logs = await tx.requestLog.findMany({
       where: {
-        projectId: currentProject?.id
+        projectId: currentProject.id,
+        ...(search && {
+          OR: [
+            { incomingPath: { contains: search, mode: "insensitive" } },
+            { fullIncomingUrl: { contains: search, mode: "insensitive" } },
+            { forwardedUrl: { contains: search, mode: "insensitive" } },
+          ],
+        }),
+        ...(method !== "all" && { method }),
+        ...(status === "2xx" && { responseStatus: { gte: 200, lt: 300 } }),
+        ...(status === "4xx" && { responseStatus: { gte: 400, lt: 500 } }),
+        ...(status === "5xx" && { responseStatus: { gte: 500, lt: 600 } }),
       },
-    })
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
+    });
+
+    // Get total count with same filters
+    const count = await tx.requestLog.count({
+      where: {
+        projectId: currentProject.id,
+        ...(search && {
+          OR: [
+            { incomingPath: { contains: search, mode: "insensitive" } },
+            { fullIncomingUrl: { contains: search, mode: "insensitive" } },
+            { forwardedUrl: { contains: search, mode: "insensitive" } },
+          ],
+        }),
+        ...(method !== "all" && { method }),
+        ...(status === "2xx" && { responseStatus: { gte: 200, lt: 300 } }),
+        ...(status === "4xx" && { responseStatus: { gte: 400, lt: 500 } }),
+        ...(status === "5xx" && { responseStatus: { gte: 500, lt: 600 } }),
+      },
+    });
+
+    const userApps = await tx.apps.findMany({
+      where: {
+        User: {
+          email: userEmail,
+        },
+      },
+    });
 
     return [
-      currentProject,
-      currenttotalLogs
-    ]
+      { ...currentProject, requestLogs: logs },
+      count,
+      userApps,
+    ];
   });
-
 
   if (!project) {
     notFound();
   }
 
+  const stats = await getProjectStats(project.id);
+
+  if (!stats) {
+    return notFound();
+  }
 
   const totalPages = Math.ceil(totalLogs / pageSize);
   const incomingUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhook/${project.pathSegment}`;
@@ -100,12 +200,22 @@ export default async function ProjectDetailPage({
     <div className="space-y-6">
       {/* Back Button & Header */}
       <div>
-        <Button variant="ghost" asChild className="mb-4 -ml-2">
-          <ProgressLink href="/projects">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Projects
-          </ProgressLink>
-        </Button>
+        <div className="flex justify-between items-center">
+          <Button variant="ghost" asChild className="mb-4 -ml-2">
+            <ProgressLink href="/projects">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Projects
+            </ProgressLink>
+          </Button>
+          <Badge
+            className={`text-sm  h-10 flex justify-center  ${project.isLive
+              ? 'bg-green-500/20 w-[100px] text-green-600 dark:text-green-400 '
+              : 'bg-gray-500/20 text-gray-600 sm:w-[110px] dark:text-gray-400'
+              }`}
+          >
+            {project.isLive ? 'Live' : 'Development'}
+          </Badge>
+        </div>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
@@ -119,8 +229,6 @@ export default async function ProjectDetailPage({
           </div>
           <div className="flex items-center gap-2">
             <span />
-            {/* <EditButton project={project} />
-            <DeleteButton pathSegment={project.pathSegment} /> */}
           </div>
         </div>
       </div>
@@ -163,6 +271,13 @@ export default async function ProjectDetailPage({
           </CardContent>
         </Card>
       </div>
+      {
+        project.isLive && (
+          <p className="text-base font-medium py-4 pl-1">
+            Project is live, Request will be forwarded to "{project.app?.url}"
+          </p>
+        )
+      }
 
       {/* Tabs Section */}
       <Tabs defaultValue="logs" className="space-y-6">
@@ -174,62 +289,42 @@ export default async function ProjectDetailPage({
 
         <TabsContent value="logs" className="space-y-4">
           {/* Filters */}
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <Input
-                  placeholder="Search logs..."
-                  className="max-w-xs"
-                />
-                <Select defaultValue="all">
-                  <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Methods</SelectItem>
-                    <SelectItem value="GET">GET</SelectItem>
-                    <SelectItem value="POST">POST</SelectItem>
-                    <SelectItem value="PUT">PUT</SelectItem>
-                    <SelectItem value="DELETE">DELETE</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select defaultValue="all-status">
-                  <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all-status">All Status</SelectItem>
-                    <SelectItem value="2xx">2xx Success</SelectItem>
-                    <SelectItem value="4xx">4xx Client Error</SelectItem>
-                    <SelectItem value="5xx">5xx Server Error</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+          <RequestLogsFilter
+            defaultSearch={search}
+            defaultMethod={method}
+            defaultStatus={status}
+          />
 
           {/* Request Logs Table */}
           <div className="shadow-sm border-x border-[var(--primary)]/20 rounded-md">
             <Table className="rounded-t-md overflow-hidden border-none">
               <TableHeader>
                 <TableRow className="bg-[var(--primary)] h-10 md:h-12 lg:h-14 rounded-t-lg text-white">
-                  <TableHead className="font-medium ">Timestamp</TableHead>
-                  <TableHead className="font-medium ">Method</TableHead>
-                  <TableHead className="font-medium ">Path</TableHead>
-                  <TableHead className="font-medium ">Event</TableHead>
-                  <TableHead className="font-medium ">Status</TableHead>
-                  <TableHead className="font-medium ">Status Code</TableHead>
-                  <TableHead className="font-medium ">Duration</TableHead>
-                  <TableHead className="font-medium  text-right">Actions</TableHead>
+                  <TableHead className="font-medium">Timestamp</TableHead>
+                  <TableHead className="font-medium">Method</TableHead>
+                  <TableHead className="font-medium">Path</TableHead>
+                  <TableHead className="font-medium">Event</TableHead>
+                  <TableHead className="font-medium">Status</TableHead>
+                  <TableHead className="font-medium">Status Code</TableHead>
+                  <TableHead className="font-medium">Duration</TableHead>
+                  <TableHead className="font-medium text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {project.requestLogs.length === 0 ? (
                   <TableRow className="border-none">
-                    <TableCell colSpan={7} className="h-32 text-center">
+                    <TableCell colSpan={8} className="h-32 text-center">
                       <div className="flex flex-col items-center justify-center text-muted-foreground">
-                        <p className="text-lg font-medium">No requests yet</p>
-                        <p className="text-sm mt-1">Requests will appear here once received</p>
+                        <p className="text-lg font-medium">
+                          {search || method !== "all" || status !== "all-status"
+                            ? "No matching requests found"
+                            : "No requests yet"}
+                        </p>
+                        <p className="text-sm mt-1">
+                          {search || method !== "all" || status !== "all-status"
+                            ? "Try adjusting your filters"
+                            : "Requests will appear here once received"}
+                        </p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -273,7 +368,7 @@ export default async function ProjectDetailPage({
                           variant="ghost"
                           size="sm"
                           asChild
-                          className="hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]"
+                          className="hover:bg-[var(--primary)]/5 hover:text-[var(--primary)]"
                         >
                           <ProgressLink href={`/projects/p/${project.pathSegment}/requests/${log.id}`}>
                             <Eye className="h-4 w-4 mr-2" />
@@ -305,11 +400,14 @@ export default async function ProjectDetailPage({
         </TabsContent>
 
         <TabsContent value="config" className="space-y-6">
-          <ProjectConfiguration project={project} />
+          <ProjectConfiguration
+            project={project}
+            apps={apps}
+          />
         </TabsContent>
 
         <TabsContent value="stats">
-          <ProjectStats projectId={project.id} />
+          <ProjectStats stats={stats} />
         </TabsContent>
       </Tabs>
     </div>

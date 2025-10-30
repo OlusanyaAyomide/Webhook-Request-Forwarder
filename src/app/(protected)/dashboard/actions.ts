@@ -222,7 +222,6 @@ export async function getProjectsWithErrors(): Promise<ProjectWithError[]> {
     return []
   }
 }
-
 export async function getRequestsOverTime(): Promise<RequestOverTime[]> {
   try {
     const user = await currentUser()
@@ -234,27 +233,41 @@ export async function getRequestsOverTime(): Promise<RequestOverTime[]> {
 
     if (!dbUser) return []
 
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
     const logs = await prisma.requestLog.findMany({
       where: {
         project: { userId: dbUser.id },
-        createdAt: { gte: twentyFourHoursAgo },
+        createdAt: { gte: sevenDaysAgo },
       },
       select: {
         createdAt: true,
       },
     })
 
-    // Group by 4-hour intervals
-    const intervals = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00']
-    const grouped = intervals.map((time) => ({ time, requests: 0 }))
+    // Group by days
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const today = new Date()
+
+    // Create array for last 7 days
+    const grouped = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(today)
+      date.setDate(date.getDate() - (6 - i))
+      return {
+        time: days[date.getDay()],
+        requests: 0,
+      }
+    })
 
     logs.forEach((log) => {
-      const hour = log.createdAt.getHours()
-      const intervalIndex = Math.floor(hour / 4)
-      if (intervalIndex < grouped.length) {
-        grouped[intervalIndex].requests++
+      const logDate = new Date(log.createdAt)
+      const diffTime = today.getTime() - logDate.getTime()
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+      // Map to the correct day in our grouped array
+      const index = 6 - diffDays
+      if (index >= 0 && index < 7) {
+        grouped[index].requests++
       }
     })
 
@@ -264,7 +277,6 @@ export async function getRequestsOverTime(): Promise<RequestOverTime[]> {
     return []
   }
 }
-
 export async function getStatusCodeDistribution(): Promise<StatusCodeDistribution[]> {
   try {
     const user = await currentUser()

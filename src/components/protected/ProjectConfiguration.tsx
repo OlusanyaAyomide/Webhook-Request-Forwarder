@@ -4,17 +4,51 @@ import React, { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
-import { Project } from '@prisma/client'
+import { Project, Apps } from '@prisma/client'
 import { Button } from '../ui/button'
 import { Switch } from '../ui/switch'
 import { toast } from 'sonner'
-import { updateBasicSettings, updateLiveUrl, toggleLiveStatus } from '@/app/(protected)/projects/p/[pathSegment]/actions'
-import { Loader2 } from 'lucide-react'
+import {
+  updateBasicSettings,
+  updateApplication,
+  toggleLiveStatus,
+  deleteProject,
+} from '@/app/(protected)/projects/p/[pathSegment]/actions'
+import { Loader2, Trash2 } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog'
 
-export default function ProjectConfiguration({ project }: { project: Project }) {
+import { useRouter } from 'next/navigation'
+import NewAppDialog from './NewAppDialog'
+
+interface ProjectConfigurationProps {
+  project: Project
+  apps: Apps[]
+}
+
+export default function ProjectConfiguration({ project, apps }: ProjectConfigurationProps) {
+  const router = useRouter()
   const [isBasicPending, setIsBasicPending] = useState(false)
-  const [isLivePending, setIsLivePending] = useState(false)
+  const [isAppPending, setIsAppPending] = useState(false)
   const [isTogglePending, setIsTogglePending] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isDeletePending, setIsDeletePending] = useState(false)
+  const [deleteConfirmation, setDeleteConfirmation] = useState('')
+  const [selectedAppId, setSelectedAppId] = useState(project.appId || '')
 
   const handleBasicSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -37,24 +71,22 @@ export default function ProjectConfiguration({ project }: { project: Project }) 
     }
   }
 
-  const handleLiveUrlSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleApplicationSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLivePending(true)
-
-    const formData = new FormData(e.currentTarget)
+    setIsAppPending(true)
 
     try {
-      const result = await updateLiveUrl(project.pathSegment, formData)
+      const result = await updateApplication(project.pathSegment, selectedAppId || null)
 
       if (result.success) {
-        toast.success('Live URL updated successfully')
+        toast.success('Application updated successfully')
       } else {
-        toast.error(result.error || 'Failed to update live URL')
+        toast.error(result.error || 'Failed to update application')
       }
     } catch (error) {
       toast.error('An unexpected error occurred')
     } finally {
-      setIsLivePending(false)
+      setIsAppPending(false)
     }
   }
 
@@ -73,6 +105,31 @@ export default function ProjectConfiguration({ project }: { project: Project }) 
       toast.error('An unexpected error occurred')
     } finally {
       setIsTogglePending(false)
+    }
+  }
+
+  const handleDeleteProject = async () => {
+    if (deleteConfirmation.toLowerCase() !== 'delete') {
+      toast.error('Please type "delete" to confirm')
+      return
+    }
+
+    setIsDeletePending(true)
+
+    try {
+      const result = await deleteProject(project.pathSegment)
+
+      if (result.success) {
+        toast.success('Project deleted successfully')
+        setIsDeleteOpen(false)
+        router.push('/projects')
+      } else {
+        toast.error(result.error || 'Failed to delete project')
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred')
+    } finally {
+      setIsDeletePending(false)
     }
   }
 
@@ -129,32 +186,47 @@ export default function ProjectConfiguration({ project }: { project: Project }) 
 
       <Card>
         <CardHeader>
-          <CardTitle>Live Configuration</CardTitle>
-          <CardDescription>Configure your live webhook forwarding URL</CardDescription>
+          <CardTitle>Application Configuration</CardTitle>
+          <CardDescription>Select the application for webhook forwarding</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <form onSubmit={handleLiveUrlSubmit} className="space-y-4">
+          <form onSubmit={handleApplicationSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="live-url">Live URL</Label>
+              <Label htmlFor="app-select">Application</Label>
               <p className="text-sm text-muted-foreground mt-1 mb-3">
-                This is the URL that requests will be forwarded to once the live switch is toggled
+                Select an existing application or add a new one
               </p>
-              <Input
-                id="live-url"
-                name="liveUrl"
-                placeholder="https://api.example.com/webhook"
-                defaultValue={project.liveUrl || ''}
-                disabled={isLivePending}
-              />
+              <Select
+                value={selectedAppId}
+                onValueChange={setSelectedAppId}
+                disabled={isAppPending}
+              >
+                <SelectTrigger id="app-select">
+                  <SelectValue placeholder="Select an application" />
+                </SelectTrigger>
+                <SelectContent>
+                  {apps.map((app) => (
+                    <SelectItem key={app.id} value={app.id}>
+                      {app.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+
+            <NewAppDialog
+              onSuccess={(app) => {
+                setSelectedAppId(app.id)
+              }}
+            />
             <div>
               <Button
                 type="submit"
                 className="h-10 md:h-12 px-8 text-white"
-                disabled={isLivePending}
+                disabled={isAppPending || !selectedAppId}
               >
-                {isLivePending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Update Live URL
+                {isAppPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Update Application
               </Button>
             </div>
           </form>
@@ -164,7 +236,7 @@ export default function ProjectConfiguration({ project }: { project: Project }) 
               <div className="space-y-0.5">
                 <Label htmlFor="live-toggle">Go Live</Label>
                 <p className="text-sm text-muted-foreground">
-                  Enable webhook forwarding to your live URL
+                  Enable webhook forwarding to your application
                 </p>
               </div>
               <Switch
@@ -175,6 +247,61 @@ export default function ProjectConfiguration({ project }: { project: Project }) 
               />
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardDescription>
+            Permanently delete this project and all associated data
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="h-10 md:h-12 px-8"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Project
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete the project
+                  &quot;{project.name}&quot; and all associated request logs.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <Label htmlFor="delete-confirm">
+                  Type <span className="font-bold">delete</span> to confirm your intention
+                </Label>
+                <Input
+                  id="delete-confirm"
+                  value={deleteConfirmation}
+                  onChange={(e) => setDeleteConfirmation(e.target.value)}
+                  placeholder="delete"
+                  className="mt-2"
+                  disabled={isDeletePending}
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="destructive"
+                  onClick={handleDeleteProject}
+                  className='w-full h-12 flex'
+                  disabled={isDeletePending || deleteConfirmation.toLowerCase() !== 'delete'}
+                >
+                  {isDeletePending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Delete Project
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
     </>

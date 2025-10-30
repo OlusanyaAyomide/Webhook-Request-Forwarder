@@ -15,7 +15,6 @@ import { ProgressLink } from "@/components/protected/ProgressLink";
 
 export const dynamic = "force-dynamic";
 
-
 export default async function DashboardPage({
   searchParams
 }: {
@@ -72,7 +71,6 @@ export default async function DashboardPage({
               <TableHead className="font-medium">Name</TableHead>
               <TableHead className="font-medium">Forwarder URL</TableHead>
               <TableHead className="font-medium">Path Segment</TableHead>
-              <TableHead className="font-medium">Last Request</TableHead>
               <TableHead className="font-medium">Created</TableHead>
               <TableHead className="font-medium text-right">Actions</TableHead>
             </TableRow>
@@ -105,19 +103,6 @@ export default async function DashboardPage({
                     </code>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
-                    {/* {project.lastRequestAt 
-                      ? new Date(project.lastRequestAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })
-                      : <span className="text-muted-foreground/60">No requests yet</span>
-                    } */}
-                    <span>12 minutes ago</span>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
                     {new Date(project.createdAt).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
@@ -129,7 +114,7 @@ export default async function DashboardPage({
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]"
+                      className="hover:bg-[var(--primary)]/5 hover:text-[var(--primary)]"
                     >
                       <ProgressLink href={`/projects/p/${project.pathSegment}`}>
                         <Eye className="h-4 w-4 mr-2" />
