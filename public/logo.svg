@@ -1,0 +1,46 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 80 80"
+  width="80"
+  height="80"
+>
+  <!-- Background with rounded corners and gradient -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7f22fe" />
+      <stop offset="100%" stop-color="#00d4ff" />
+    </linearGradient>
+
+    <!-- Shadow effect -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Gradient background with rounded corners and shadow -->
+  <rect
+    x="0"
+    y="0"
+    width="80"
+    height="80"
+    rx="16"
+    fill="url(#grad)"
+    filter="url(#shadow)"
+  />
+
+  <!-- Centered lightning icon -->
+  <g transform="translate(20, 20)">
+    <svg
+      viewBox="0 0 24 24"
+      width="60"
+      height="60"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  </g>
+</svg>

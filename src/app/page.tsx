@@ -1,5 +1,29 @@
-import { redirect } from 'next/navigation'
+'use client'
+
+import { Analytics } from '@/home/components/Analytics'
+import { ApplicationManagement } from '@/home/components/ApplicationManagement'
+import { Features } from '@/home/components/Features'
+import { FinalCTA } from '@/home/components/FinalCTA'
+import { Footer } from '@/home/components/Footer'
+import { Hero } from '@/home/components/Hero'
+import { HowItWorks } from '@/home/components/HowItWorks'
+import { ProblemSolution } from '@/home/components/ProblemSolution'
+import { TechnicalHighlights } from '@/home/components/TechnicalHighlights'
+import { UseCases } from '@/home/components/UseCases'
 
 export default function Home() {
-  redirect('/dashboard')
+  return (
+    <div className="min-h-screen">
+      <Hero />
+      <ProblemSolution />
+      <Features />
+      <Analytics />
+      <HowItWorks />
+      <ApplicationManagement />
+      <UseCases />
+      <TechnicalHighlights />
+      <FinalCTA />
+      <Footer />
+    </div>
+  )
 }

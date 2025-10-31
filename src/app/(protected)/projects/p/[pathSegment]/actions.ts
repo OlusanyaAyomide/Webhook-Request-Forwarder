@@ -25,7 +25,7 @@ interface FormState {
 
 export async function updateProject(
   pathSegment: string,
-  prevState: FormState,
+  // prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
   const validatedFields = schema.safeParse({
@@ -38,6 +38,7 @@ export async function updateProject(
       errors: validatedFields.error.flatten().fieldErrors,
     }
   }
+
 
   const { name, forwarderBaseUrl } = validatedFields.data
 
@@ -57,10 +58,6 @@ export async function updateProject(
 const basicSettingsSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
   forwarderBaseUrl: z.string().url('Must be a valid URL'),
-})
-
-const liveUrlSchema = z.object({
-  liveUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 })
 
 type ActionResult = {

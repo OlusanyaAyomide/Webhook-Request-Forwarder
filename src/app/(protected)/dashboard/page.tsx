@@ -13,7 +13,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import LineChartContainer from '@/components/protected/LineChartContainer'
 import PieChartContainer from '@/components/protected/PieChartContainer'
-import { currentUser } from '@clerk/nextjs/server'
 import {
   getDashboardStats,
   getRecentEvents,
@@ -25,7 +24,6 @@ import {
 import { ProgressLink } from '@/components/protected/ProgressLink'
 
 export default async function Dashboard() {
-  const user = await currentUser()
 
   // Fetch all data in parallel
   const [
@@ -76,7 +74,7 @@ export default async function Dashboard() {
               </p>
             </div>
             <div className="p-3 rounded-lg bg-blue-500/10">
-              <Activity className="w-6 h-6 text-primary text-blue-500" />
+              <Activity className="w-6 h-6 t text-blue-500" />
             </div>
           </div>
         </Card>
@@ -221,7 +219,7 @@ export default async function Dashboard() {
         <Card className="bg-card border border-sidebar-border p-6 mb-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-foreground flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-destructive text-red-500" />
+              <AlertCircle className="w-5 h-5 text-red-500" />
               Projects with Recent Errors
             </h3>
             <Badge className="bg-red-500/20 text-red-500">
@@ -232,7 +230,7 @@ export default async function Dashboard() {
             {projectsWithErrors.map((project) => (
               <div
                 key={project.id}
-                className="flex items-center justify-between p-4 bg-red-500/10 rounded-lg border border-destructive/20 bg-destructive/10 transition-colors hover:bg-destructive/20"
+                className="flex items-center justify-between p-4 rounded-lg border border-destructive/20 bg-destructive/10 transition-colors hover:bg-destructive/20"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-2.5 w-2.5 bg-destructive rounded-full flex-shrink-0" />
