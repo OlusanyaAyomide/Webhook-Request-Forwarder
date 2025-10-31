@@ -128,7 +128,7 @@ export default async function Dashboard() {
         <Card className="bg-card border border-sidebar-border p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-muted-foreground mb-1">Active Projects</p>
+              <p className="text-muted-foreground mb-1">Total Projects</p>
               <p className="text-foreground text-3xl font-semibold">
                 {dashboardStats.activeProjects}
               </p>

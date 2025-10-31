@@ -43,12 +43,16 @@ export function Footer() {
               className="flex items-center gap-2 mb-4"
               whileHover={{ scale: 1.05 }}
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7f22fe] to-[#00d4ff] flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+              <div className="flex items-center gap-3">
+                <img
+                  src="./logo.png"
+                  alt="Echo Logo"
+                  className="h-9 w-9 rounded-lg"
+                />
+                <span className="text-2xl font-bold bg-gradient-to-r from-[#7f22fe] to-[#00d4ff] bg-clip-text text-transparent">
+                  Echo
+                </span>
               </div>
-              <span className="text-white">Echo</span>
             </motion.div>
             <p className="text-gray-400 text-sm mb-6">
               The developer-first webhook testing and management platform.
@@ -142,7 +146,7 @@ export function Footer() {
         <div className="pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} WebhookPro. All rights reserved.
+              © {new Date().getFullYear()} Echo. All rights reserved.
             </p>
 
             <div className="flex items-center gap-4">

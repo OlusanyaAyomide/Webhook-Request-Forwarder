@@ -1,9 +1,15 @@
+// src/app/sign-up/[[...sign-up]]/page.tsx
 'use client'
 
 import { SignUp } from '@clerk/nextjs'
 import { motion } from "motion/react"
+import { useSearchParams } from 'next/navigation'
 
 export default function Page() {
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+  const email = searchParams.get('email')
+
   return (
     <div className='grid place-items-center h-screen relative overflow-hidden bg-gradient-to-br from-purple-50 via-white to-cyan-50 pt-10 pb-20'>
       <div className="absolute inset-0 overflow-hidden">
@@ -26,7 +32,29 @@ export default function Page() {
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
       </div>
-      <SignUp />
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg max-w-md"
+        >
+          {error === 'account_exists' && (
+            <p className="text-red-800 text-sm">
+              <strong>Account already exists.</strong> An account with {email} already exists. Please sign in instead.
+            </p>
+          )}
+          {error !== 'account_exists' && (
+            <p className="text-red-800 text-sm">
+              <strong>Error:</strong> Something went wrong. Please try again.
+            </p>
+          )}
+        </motion.div>
+      )}
+
+      <SignUp
+        signInUrl='/sign-in'
+      />
     </div>
   )
 }

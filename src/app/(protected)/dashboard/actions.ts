@@ -89,7 +89,7 @@ export async function getDashboardStats(): Promise<DashboardStats | null> {
       prisma.project.count({
         where: {
           userId: dbUser.id,
-          isLive: true,
+          // isLive: true,
         },
       }),
       prisma.project.count({

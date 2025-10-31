@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import Link from "next/link";
+
 import clsx from "clsx";
 import { ArrowLeft, LogOut, Settings, MoreVertical, Moon, Sun } from "lucide-react";
 import {

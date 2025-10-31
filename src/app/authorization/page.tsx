@@ -13,6 +13,8 @@ export default async function AuthorizationPage() {
   const first_name = user.firstName || ""
   const last_name = user.lastName || ""
 
+
+
   if (!email) {
     throw new Error("User email not found")
   }
@@ -39,6 +41,8 @@ export default async function AuthorizationPage() {
       },
     })
   }
+
+  console.log('redirecting...')
 
   redirect("/dashboard")
 }

@@ -5,7 +5,7 @@ import { ProgressLink } from "@/components/protected/ProgressLink";
 
 
 const features = [
-  "Free tier included",
+  "Completely Free",
   "Instant setup - no credit card",
   "Complete request logging",
   "Real-time analytics"

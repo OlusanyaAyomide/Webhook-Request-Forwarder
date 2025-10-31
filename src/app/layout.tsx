@@ -7,6 +7,7 @@ import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import ClientProvider from "@/components/protected/ClientProvider";
+import { NavigationEvents } from "@/components/protected/NavigationEvents";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,6 +95,7 @@ export default function RootLayout({
           </ClientProvider>
         </ClerkProvider>
         <Toaster />
+        <NavigationEvents />
       </body>
     </html>
   );

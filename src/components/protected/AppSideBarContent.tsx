@@ -79,11 +79,15 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
           <div className="flex items-center">
             <SidebarHeader className={` flex flex-row  border-[var(--muted)] ${open ? "p-6 w-full" : "w-11 p-2 mt-4"} transition-all duration-500`}>
               <div className="flex items-center gap-2">
-                <div className="bg-[var(--primary)] p-2 rounded-lg">
-                  <Webhook className="w-5 h-5" style={{ color: "white" }} />
-                </div>
-                <div className={`transition-all duration-300 ${open ? "" : "text-[0px]"}`}>
-                  <h2 className="font-semibold">WH<span className="max-lg:hidden ml-1">Forwarder</span><span className="lg:hidden">F</span></h2>
+                <img
+                  src="/logo.png"
+                  alt="Echo Logo"
+                  className="h-10 w-10 rounded-lg shrink-0"
+                />
+                <div className={`transition-all duration-300 ${open ? "text-3xl" : "text-[0px]"}`}>
+                  <span className="font-bold bg-gradient-to-r from-[#7f22fe] to-[#00d4ff] bg-clip-text text-transparent">
+                    Echo
+                  </span>
                 </div>
               </div>
             </SidebarHeader>
@@ -182,7 +186,7 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
         </Sidebar>
         {/* Main content */}
         <main className="flex-1 pt-26 p-8 overflow-auto">
-          <div className="max-w-7xl mx-auto">{children}</div>
+          <div className="max-w-7xl mx-auto max-md:pb-20">{children}</div>
         </main>
       </div>
 

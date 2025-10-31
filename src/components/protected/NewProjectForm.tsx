@@ -134,7 +134,7 @@ export default function NewProjectForm({ apps }: NewProjectFormProps) {
                   <SelectItem key={app.id} value={app.id}>
                     <div className="flex">
                       <span className="font-medium">{app.name}</span>
-                      <span className="text-foreground/50 ml-1 text-muted-foreground">
+                      <span className="text-foreground/50 ml-1">
                         url: {
                           trimText(app.url, 40)
                         }

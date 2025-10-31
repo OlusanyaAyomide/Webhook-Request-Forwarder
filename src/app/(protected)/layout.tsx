@@ -5,7 +5,6 @@ import { useUser } from "@clerk/nextjs"; // adjust if you're not using Clerk
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSideBarContent from "@/components/protected/AppSideBarContent";
 import { ReactNode } from "react";
-import { NavigationEvents } from "@/components/protected/NavigationEvents";
 import MobileBottomNav from "@/components/protected/MobileBottomNav";
 import { MobileWarning } from "@/components/protected/MobileViewWarning";
 
@@ -28,7 +27,6 @@ export default function Layout({ children }: { children: ReactNode }) {
       <AppSideBarContent>{children}</AppSideBarContent>
       <MobileBottomNav />
       <MobileWarning />
-      <NavigationEvents />
     </SidebarProvider>
   );
 }

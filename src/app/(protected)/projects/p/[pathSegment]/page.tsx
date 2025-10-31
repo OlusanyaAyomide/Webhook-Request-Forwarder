@@ -27,6 +27,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { ProgressLink } from "@/components/protected/ProgressLink";
 import { getProjectStats } from "./stat.actions";
 import { RequestLogsFilter } from "@/components/protected/RequestLogsFilter";
+import WebhookBaseUrl from "@/home/components/WebhookBaseUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -183,7 +184,6 @@ export default async function ProjectDetailPage({
   }
 
   const totalPages = Math.ceil(totalLogs / pageSize);
-  const incomingUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhook/${project.pathSegment}`;
 
   const getStatusBadge = (status: number) => {
     if (status >= 200 && status < 300) {
@@ -241,15 +241,9 @@ export default async function ProjectDetailPage({
             <CardDescription>Send requests to this endpoint</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 text-sm bg-muted px-3 py-2 rounded overflow-x-auto font-mono">
-                {incomingUrl}
-              </code>
-              <CopyButton
-                text={incomingUrl}
-                customMessage="Incoming Url Copied to clipboard"
-              />
-            </div>
+            <WebhookBaseUrl
+              pathSegment={project.pathSegment}
+            />
           </CardContent>
         </Card>
 
