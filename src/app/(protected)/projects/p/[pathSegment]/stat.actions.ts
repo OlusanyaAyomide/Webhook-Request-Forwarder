@@ -1,12 +1,6 @@
 
 import { prisma } from "@/lib/prisma";
 
-interface PageProps {
-  params: {
-    pathSegment: string;
-  };
-}
-
 export async function getProjectStats(projectId: string) {
 
   const requestLogs = await prisma.requestLog.findMany({

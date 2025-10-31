@@ -1,5 +1,4 @@
 
-import { redirect } from 'next/navigation'
 import { getAppsWithProjects } from './settings.actions'
 import Settings from '@/components/protected/Settings'
 

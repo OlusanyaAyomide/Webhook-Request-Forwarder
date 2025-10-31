@@ -97,6 +97,7 @@ export async function getApps() {
 
     return apps
   } catch (error) {
+    void error
     return []
   }
 }

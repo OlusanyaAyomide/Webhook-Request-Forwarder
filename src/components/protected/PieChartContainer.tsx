@@ -34,6 +34,7 @@ export default function PieChartContainer({ data }: PieChartContainerProps) {
     <ResponsiveContainer width="100%" height={250}>
       <PieChart>
         <Pie
+          //eslint-disable-next-line  @typescript-eslint/no-explicit-any
           data={data as any}
           cx="50%"
           cy="50%"

@@ -87,7 +87,7 @@ export default function RequestDetailPage({ log }: { log: RequestLog }) {
               <h3 className="text-card-foreground text-lg font-semibold mb-4">
                 Incoming Body
               </h3>
-              <JsonViewer json={log.requestBody as Record<string, string>} id="incoming-body" />
+              <JsonViewer json={log.requestBody as Record<string, string>} />
             </Card>
           </TabsContent>
 
@@ -148,7 +148,7 @@ export default function RequestDetailPage({ log }: { log: RequestLog }) {
               <h3 className="text-card-foreground text-lg font-semibold mb-4">
                 Response Body
               </h3>
-              <JsonViewer json={log.responseBody as Record<string, string>} id="response-body" />
+              <JsonViewer json={log.responseBody as Record<string, string>} />
             </Card>
           </TabsContent>
         </Tabs>

@@ -184,6 +184,7 @@ export async function getAppsWithProjects() {
 
     return { success: true, apps }
   } catch (error) {
+    void error
 
     return { success: false, error: 'Failed to fetch apps', apps: [] }
   }

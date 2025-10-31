@@ -82,30 +82,28 @@ export function TechnicalHighlights() {
                     <span className="text-purple-400">const</span>{" "}
                     <span className="text-cyan-300">webhookUrl</span>{" "}
                     <span className="text-white">=</span>{"\n"}
-                    <span className="text-green-400">  "https://webhooks.yourdomain.com/"</span>{" "}
+                    <span className="text-green-400">  &quot;https://webhooks.yourdomain.com/&quot;</span>{" "}
                     <span className="text-white">+</span>{"\n"}
-                    <span className="text-green-400">  "abc123-your-project-id"</span>
+                    <span className="text-green-400">  &quot;abc123-your-project-id&quot;</span>
                     <span className="text-white">;</span>{"\n\n"}
-                    
-                    <span className="text-gray-500">// Configure your webhook</span>{"\n"}
+                    <span className="text-gray-500">{'// Configure your webhook'}</span>{"\n"}
                     <span className="text-purple-400">await</span>{" "}
                     <span className="text-cyan-300">stripe</span>
                     <span className="text-white">.</span>
                     <span className="text-cyan-300">webhooks</span>
                     <span className="text-white">.</span>
                     <span className="text-yellow-300">create</span>
-                    <span className="text-white">{"({"}</span>{"\n"}
+                    <span className="text-white">{'({'}</span>{"\n"}
                     <span className="text-cyan-300">  url</span>
                     <span className="text-white">:</span>{" "}
                     <span className="text-cyan-300">webhookUrl</span>
                     <span className="text-white">,</span>{"\n"}
                     <span className="text-cyan-300">  events</span>
                     <span className="text-white">: [</span>
-                    <span className="text-green-400">'payment.success'</span>
+                    <span className="text-green-400">&apos;payment.success&apos;</span>
                     <span className="text-white">]</span>{"\n"}
-                    <span className="text-white">{"});"}</span>{"\n\n"}
-                    
-                    <span className="text-gray-500">// Monitor in real-time ✨</span>
+                    <span className="text-white">{'});'}</span>{"\n\n"}
+                    <span className="text-gray-500">{'// Monitor in real-time ✨'}</span>
                   </code>
                 </pre>
               </div>

@@ -65,6 +65,7 @@ export default function ProjectConfiguration({ project, apps }: ProjectConfigura
         toast.error(result.error || 'Failed to update settings')
       }
     } catch (error) {
+      void error
       toast.error('An unexpected error occurred')
     } finally {
       setIsBasicPending(false)
@@ -84,6 +85,7 @@ export default function ProjectConfiguration({ project, apps }: ProjectConfigura
         toast.error(result.error || 'Failed to update application')
       }
     } catch (error) {
+      void error
       toast.error('An unexpected error occurred')
     } finally {
       setIsAppPending(false)
@@ -102,6 +104,7 @@ export default function ProjectConfiguration({ project, apps }: ProjectConfigura
         toast.error(result.error || 'Failed to toggle live status')
       }
     } catch (error) {
+      void error
       toast.error('An unexpected error occurred')
     } finally {
       setIsTogglePending(false)
@@ -127,6 +130,7 @@ export default function ProjectConfiguration({ project, apps }: ProjectConfigura
         toast.error(result.error || 'Failed to delete project')
       }
     } catch (error) {
+      void error
       toast.error('An unexpected error occurred')
     } finally {
       setIsDeletePending(false)

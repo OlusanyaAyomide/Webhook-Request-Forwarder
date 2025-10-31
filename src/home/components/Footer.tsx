@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import Image from "next/image";
 
 const footerLinks = {
   product: [
@@ -44,10 +45,13 @@ export function Footer() {
               whileHover={{ scale: 1.05 }}
             >
               <div className="flex items-center gap-3">
-                <img
+                <Image
                   src="./logo.png"
                   alt="Echo Logo"
                   className="h-9 w-9 rounded-lg"
+                  height={10}
+                  width={10}
+                  unoptimized
                 />
                 <span className="text-2xl font-bold bg-gradient-to-r from-[#7f22fe] to-[#00d4ff] bg-clip-text text-transparent">
                   Echo

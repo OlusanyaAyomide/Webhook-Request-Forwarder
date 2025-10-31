@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -17,7 +16,6 @@ import {
   LayoutDashboard,
   FolderGit2,
   Settings as SettingsIcon,
-  Webhook,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -29,6 +27,7 @@ import { useEffect, useState } from "react";
 import { useUser } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ProgressLink } from "./ProgressLink";
+import Image from "next/image";
 
 
 export default function AppSideBarContent({ children }: { children: React.ReactNode }) {
@@ -79,9 +78,12 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
           <div className="flex items-center">
             <SidebarHeader className={` flex flex-row  border-[var(--muted)] ${open ? "p-6 w-full" : "w-11 p-2 mt-4"} transition-all duration-500`}>
               <div className="flex items-center gap-2">
-                <img
+                <Image
                   src="/logo.png"
                   alt="Echo Logo"
+                  width={10}
+                  height={10}
+                  unoptimized
                   className="h-10 w-10 rounded-lg shrink-0"
                 />
                 <div className={`transition-all duration-300 ${open ? "text-3xl" : "text-[0px]"}`}>

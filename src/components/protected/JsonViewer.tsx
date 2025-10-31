@@ -1,7 +1,7 @@
 'use client'
 
 
-export default function JsonViewer({ json, id }: { json: object; id: string }) {
+export default function JsonViewer({ json }: { json: object }) {
   const jsonString = JSON.stringify(json, null, 2);
   return (
     <div className="relative rounded-md p-3 bg-[var(--input)]">

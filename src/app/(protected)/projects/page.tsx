@@ -18,9 +18,11 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage({
   searchParams
 }: {
-  searchParams: { page?: string }
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  searchParams: any
 }) {
   const user = await currentUser()
+
   const page = Number(await searchParams?.page) || 1;
   const pageSize = 10;
   const skip = (page - 1) * pageSize;

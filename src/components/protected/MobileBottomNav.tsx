@@ -2,7 +2,7 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import { Home, Folder, Settings, BarChart } from "lucide-react";
+import { Home, Folder, Settings } from "lucide-react";
 import { ProgressLink } from "./ProgressLink";
 import clsx from "clsx";
 

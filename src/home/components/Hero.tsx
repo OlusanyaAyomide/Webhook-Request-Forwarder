@@ -5,6 +5,7 @@ import { ProgressLink } from "@/components/protected/ProgressLink";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import BaseUrl from "./BaseUrl";
+import Image from "next/image";
 
 function Header({ isVisible }: { isVisible: boolean }) {
   const headerVariants = {
@@ -23,10 +24,13 @@ function Header({ isVisible }: { isVisible: boolean }) {
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Brand Logo and Name */}
         <div className="flex items-center gap-3">
-          <img
-            src="./logo.png"
+          <Image
+            src="/logo.png"
             alt="Echo Logo"
             className="h-10 w-10 rounded-lg xl:h-12 xl:w-12"
+            height={12}
+            width={12}
+            unoptimized
           />
           <span className="text-2xl xl:text-3xl font-bold bg-gradient-to-r from-[#7f22fe] to-[#00d4ff] bg-clip-text text-transparent">
             Echo
@@ -63,7 +67,7 @@ export function Hero() {
       return;
     }
     setTheme("light");
-  }, [theme]);
+  }, [theme, setTheme]);
 
 
   useEffect(() => {

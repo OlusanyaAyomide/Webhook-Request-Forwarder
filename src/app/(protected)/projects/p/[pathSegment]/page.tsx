@@ -42,6 +42,7 @@ export default async function ProjectDetailPage({
   params,
   searchParams,
 }: {
+  //eslint-disable-next-line  @typescript-eslint/no-explicit-any
   params: any;
   searchParams: Promise<SearchParams>;
 }) {
@@ -64,6 +65,7 @@ export default async function ProjectDetailPage({
   }
 
   // Build filter conditions
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const whereConditions: any = {
     project: {
       pathSegment: pageParam.pathSegment,
@@ -268,7 +270,7 @@ export default async function ProjectDetailPage({
       {
         project.isLive && (
           <p className="text-base font-medium py-4 pl-1">
-            Project is live, Request will be forwarded to "{project.app?.url}"
+            Project is live, Request will be forwarded to &quot;{project.app?.url}&quot;
           </p>
         )
       }
