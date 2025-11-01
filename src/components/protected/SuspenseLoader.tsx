@@ -36,7 +36,7 @@ export function SuspenseLoader() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-cyan-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
       {/* Animated background orbs */}
       <motion.div
         className="absolute -top-20 -right-20 w-96 h-96 rounded-full opacity-20"

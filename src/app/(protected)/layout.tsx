@@ -13,10 +13,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-screen bg-background">
         <div className="flex flex-col items-center space-y-3">
           <div className="h-10 w-10 border-4 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-600 text-sm">Verifying ...</p>
+          <p className="text-[var(--muted-foreground)]">Verifying ...</p>
         </div>
       </div>
     );
