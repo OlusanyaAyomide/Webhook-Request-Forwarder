@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ClientProvider from "@/components/protected/ClientProvider";
 import { NavigationEvents } from "@/components/protected/NavigationEvents";
 import { Suspense } from "react";
+import { SuspenseLoader } from "@/components/protected/SuspenseLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -91,7 +92,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ClerkProvider>
-          <Suspense fallback={<span>An Error occured</span>}>
+          <Suspense fallback={<SuspenseLoader />}>
             <ClientProvider>
               {children}
             </ClientProvider>

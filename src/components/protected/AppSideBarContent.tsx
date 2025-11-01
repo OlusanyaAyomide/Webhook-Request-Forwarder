@@ -23,11 +23,12 @@ import clsx from "clsx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import AppHeader from "./AppHeader";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useUser } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ProgressLink } from "./ProgressLink";
 import Image from "next/image";
+import { SuspenseLoader } from "./SuspenseLoader";
 
 
 export default function AppSideBarContent({ children }: { children: React.ReactNode }) {
@@ -188,7 +189,9 @@ export default function AppSideBarContent({ children }: { children: React.ReactN
         </Sidebar>
         {/* Main content */}
         <main className="flex-1 pt-26 p-8 overflow-auto">
-          <div className="max-w-7xl mx-auto max-md:pb-20">{children}</div>
+          <Suspense fallback={<SuspenseLoader />}>
+            <div className="max-w-7xl mx-auto max-md:pb-20">{children}</div>
+          </Suspense>
         </main>
       </div>
 
