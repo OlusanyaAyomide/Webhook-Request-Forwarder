@@ -3,7 +3,6 @@
 import { RequestLog } from "@prisma/client";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
-import { useEffect, useState } from "react";
 import LocalTime from "./LocalTime";
 
 

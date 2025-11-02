@@ -42,7 +42,7 @@ export default function PieChartContainer({ data }: PieChartContainerProps) {
           label={({ name, percent }) =>
             `${name} (${(percent as number * 100).toFixed(0)}%)`
           }
-          outerRadius={80}
+          outerRadius={85}
           fill="var(--primary)"
           dataKey="value"
         >
@@ -55,7 +55,12 @@ export default function PieChartContainer({ data }: PieChartContainerProps) {
             backgroundColor: 'var(--popover)',
             border: '1px solid var(--border)',
             borderRadius: '8px',
-            color: 'var(--popover-foreground)',
+          }}
+          labelStyle={{
+            color: 'var(--foreground)',
+          }}
+          itemStyle={{
+            color: 'var(--foreground)',
           }}
         />
       </PieChart>

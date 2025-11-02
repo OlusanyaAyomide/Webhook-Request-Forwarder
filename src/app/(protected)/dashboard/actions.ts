@@ -319,10 +319,10 @@ export async function getStatusCodeDistribution(): Promise<StatusCodeDistributio
     })
 
     return [
-      { name: '2xx', value: distribution['2xx'], color: '#10b981' },
-      { name: '4xx', value: distribution['4xx'], color: '#f59e0b' },
-      { name: '404', value: distribution['404'], color: '#f97316' },
-      { name: '500', value: distribution['500'], color: '#ef4444' },
+      { name: '2xx', value: distribution['2xx'], color: '#10B981' }, // green (success)
+      { name: '4xx', value: distribution['4xx'], color: '#C084FC' }, // violet
+      { name: '404', value: distribution['404'], color: '#7C3AED' }, // deep purple
+      { name: '500', value: distribution['500'], color: '#EF4444' }, // red
     ].filter((item) => item.value > 0)
   } catch (error) {
     console.error('Error fetching status code distribution:', error)
