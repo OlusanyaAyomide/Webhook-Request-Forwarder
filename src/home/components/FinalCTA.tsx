@@ -45,7 +45,7 @@ export function FinalCTA() {
         />
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-6 text-center">
+      <div className="relative max-w-5xl mx-auto px-3 sm:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

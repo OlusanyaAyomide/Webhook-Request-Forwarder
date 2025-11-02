@@ -22,7 +22,7 @@ const problems = [
 export function ProblemSolution() {
   return (
     <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
         <div className="text-center mb-16">
           <h2 className="mb-4">Built for Developer Productivity</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">

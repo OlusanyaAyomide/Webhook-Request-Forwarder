@@ -51,7 +51,7 @@ export function Analytics() {
   }, []);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white max-sm:hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="mb-4">Real-Time Analytics Dashboard</h2>

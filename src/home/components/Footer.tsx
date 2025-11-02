@@ -35,7 +35,7 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer className="bg-[#1a1a1a] text-gray-300">
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-16 pb-8">
         {/* Main footer content */}
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand column */}

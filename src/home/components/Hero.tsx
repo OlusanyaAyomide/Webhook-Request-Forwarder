@@ -121,7 +121,7 @@ export function Hero() {
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-6">
           <div className="text-center max-w-4xl mx-auto">
             <motion.h1
               className="mb-6 font-medium text-xl md:text-2xl lg:text-3xl"

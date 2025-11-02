@@ -23,7 +23,7 @@ export function ApplicationManagement() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-transparent to-cyan-50 opacity-50" />
 
-      <div className="max-w-7xl mx-auto px-6 relative">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 relative">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left content */}
           <motion.div

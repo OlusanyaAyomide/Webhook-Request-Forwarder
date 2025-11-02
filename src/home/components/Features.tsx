@@ -33,7 +33,7 @@ export function Features() {
 
   return (
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
         <div className="text-center mb-16">
           <h2 className="mb-4">Everything You Need</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
