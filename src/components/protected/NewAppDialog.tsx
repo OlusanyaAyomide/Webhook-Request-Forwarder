@@ -39,6 +39,24 @@ export default function NewAppDialog({ onSuccess }: NewAppDialogProps) {
     setErrors({})
 
     const formData = new FormData(e.currentTarget)
+    const url = formData.get('url')?.toString().trim() || ''
+
+    try {
+      const parsed = new URL(url)
+
+      // Reject "http://" (only allow "https://")
+      if (parsed.protocol !== 'https:') {
+        setErrors({ url: 'Only secure URLs (https://) are allowed' })
+        setIsPending(false)
+        return
+      }
+
+    } catch {
+      setErrors({ url: 'Please enter a valid URL (e.g. https://api.example.com)' })
+      setIsPending(false)
+      return
+    }
+
 
     try {
       const result = await createApp(formData)

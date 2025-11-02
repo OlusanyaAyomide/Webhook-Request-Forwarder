@@ -21,6 +21,7 @@ import {
 import { deleteApp, updateAppLiveStatus, updateAppUrl } from '@/app/(protected)/settings/settings.actions';
 import { toast } from 'sonner';
 import { Badge } from '../ui/badge';
+import NewAppDialog from './NewAppDialog';
 
 
 interface Project {
@@ -133,8 +134,7 @@ export default function Settings({ apps = [] }: SettingsProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-[var(--foreground)] mb-2">Settings</h1>
-        <p className="text-[var(--muted-foreground)]">
+        <p className="text-muted-foreground mt-1 text-base lg:text-lg font-medium">
           Manage your applications and preferences
         </p>
       </div>
@@ -150,8 +150,11 @@ export default function Settings({ apps = [] }: SettingsProps) {
 
         <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
           {apps.length === 0 ? (
-            <div className="text-center py-8 text-[var(--muted-foreground)]">
-              No applications found
+            <div className='mb-3 py-8 flex items-center gap-3 justify-center'>
+              <div className="text-center text-[var(--muted-foreground)]">
+                No applications found
+              </div>
+              <NewAppDialog />
             </div>
           ) : (
             apps.map((app) => (

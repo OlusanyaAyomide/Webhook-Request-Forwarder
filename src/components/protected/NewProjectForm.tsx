@@ -48,6 +48,32 @@ export default function NewProjectForm({ apps }: NewProjectFormProps) {
 
     const formData = new FormData(e.currentTarget)
 
+    const url = formData.get('forwarderBaseUrl')?.toString().trim() || ''
+    const name = formData.get("name")?.toString().trim() || ''
+
+    if (name.length <= 3) {
+      setErrors({ name: 'Project Name must be more than or equal to three characters' })
+      setIsPending(false)
+      return
+    }
+
+
+    try {
+      const parsed = new URL(url)
+
+      // Reject "http://" (only allow "https://")
+      if (parsed.protocol !== 'https:') {
+        setErrors({ forwarderBaseUrl: 'Only secure URLs (https://) are allowed' })
+        setIsPending(false)
+        return
+      }
+
+    } catch {
+      setErrors({ forwarderBaseUrl: 'Please enter a valid URL (e.g. https://api.example.com)' })
+      setIsPending(false)
+      return
+    }
+
     // Add the selected app ID to the form data
     if (selectedAppId) {
       formData.set('appId', selectedAppId)

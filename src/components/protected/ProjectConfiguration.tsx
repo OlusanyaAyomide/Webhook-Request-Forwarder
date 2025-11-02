@@ -56,6 +56,33 @@ export default function ProjectConfiguration({ project, apps }: ProjectConfigura
 
     const formData = new FormData(e.currentTarget)
 
+    const url = formData.get('forwarderBaseUrl')?.toString().trim() || ''
+    const name = formData.get("name")?.toString().trim() || ''
+
+    if (name.length <= 3) {
+      toast.error('Project Name must be more than or equal to three characters')
+      setIsBasicPending(false)
+      return
+    }
+
+
+    try {
+      const parsed = new URL(url)
+
+      // Reject "http://" (only allow "https://")
+      if (parsed.protocol !== 'https:') {
+        toast.error('Only secure URLs (https://) are allowed')
+        setIsBasicPending(false)
+        return
+      }
+
+    } catch {
+      toast.error('Please enter a valid URL (e.g. https://api.example.com)')
+      setIsBasicPending(false)
+      return
+    }
+
+
     try {
       const result = await updateBasicSettings(project.pathSegment, formData)
 

@@ -32,7 +32,6 @@ export async function createApp(
     where: { email: user?.emailAddresses[0].emailAddress }
   })
 
-  console.log(formData.get("name"))
 
   try {
     const validatedFields = createAppSchema.safeParse({
@@ -56,12 +55,13 @@ export async function createApp(
         name,
         url,
         userId: userObj.id,
-        isLive: true,
+        isLive: false,
       },
     })
 
     revalidatePath('/projects/new')
     revalidatePath('/projects')
+    revalidatePath('/settings')
 
     return {
       success: true,
@@ -80,10 +80,19 @@ export async function createApp(
 }
 
 export async function getApps() {
+
+  const user = await currentUser()
+
+  const userObj = await prisma.user.findUniqueOrThrow({
+    where: { email: user?.emailAddresses[0].emailAddress }
+  })
+
+
   try {
     const apps = await prisma.apps.findMany({
       where: {
-        isLive: true,
+        // isLive: true,
+        userId: userObj.id
       },
       orderBy: {
         created_at: 'desc',
