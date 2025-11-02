@@ -94,7 +94,7 @@ export default function Settings({ apps = [] }: SettingsProps) {
     setUpdatingUrl(false);
 
     if (result.success) {
-      toast.error('Application URL has been updated successfully',);
+      toast.success('Application URL has been updated successfully',);
       setEditDialogOpen(false);
     } else {
       toast.error(result.error || 'Failed to update URL');
@@ -108,7 +108,7 @@ export default function Settings({ apps = [] }: SettingsProps) {
     setUpdatingLive(false);
 
     if (result.success) {
-      toast.success(`Application is now ${editIsLive ? 'live' : 'offline'}`,);
+      toast.success(`Application is now ${editIsLive ? 'live' : 'set to development'}`,);
       setEditDialogOpen(false);
     } else {
       toast.error(result.error || 'Failed to update live status',);

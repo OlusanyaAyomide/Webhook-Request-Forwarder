@@ -126,7 +126,7 @@ export default function ProjectConfiguration({ project, apps }: ProjectConfigura
       const result = await toggleLiveStatus(project.pathSegment, checked)
 
       if (result.success) {
-        toast.success(`Project is now ${checked ? 'live' : 'offline'}`)
+        toast.success(`Project is now ${checked ? 'live' : 'set to development'}`)
       } else {
         toast.error(result.error || 'Failed to toggle live status')
       }

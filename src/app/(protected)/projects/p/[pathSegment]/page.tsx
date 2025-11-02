@@ -266,9 +266,14 @@ export default async function ProjectDetailPage({
       </div>
       {
         project.isLive && (
-          <p className="text-base font-medium py-4 pl-1">
-            Project is live, Request will be forwarded to &quot;{project.app?.url}&quot;
-          </p>
+          <div className="py-2">
+            <p className="text-base text-muted-foreground font-medium pl-1">
+              The App holding this Project is live, Request will now be forwarded to <span className="text-black">&quot;{project.app?.url}&quot;</span> and not  &quot;{project.forwarderBaseUrl}&quot;
+            </p>
+            <p className="mt-1 text-muted-foreground font-medium pl-1">
+              To use this project forwarder url, Reset this project to development
+            </p>
+          </div>
         )
       }
 
