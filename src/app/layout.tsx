@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
 import {
   ClerkProvider,
 } from '@clerk/nextjs'
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Echo" }],
   creator: "Echo",
   publisher: "Echo",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://usecho.vercel.app'),
   alternates: {
     canonical: "/",
   },
@@ -100,6 +101,7 @@ export default function RootLayout({
             <NavigationEvents />
           </Suspense>
         </ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );
