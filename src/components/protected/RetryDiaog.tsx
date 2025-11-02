@@ -171,7 +171,7 @@ export default function RetryDialog({
                 <h4 className="text-sm font-semibold text-card-foreground mb-3">
                   Response Body
                 </h4>
-                <JsonViewer json={retryResult.body} />
+                <JsonViewer addMaxWidth json={retryResult.body} />
               </Card>
             </div>
           )}
