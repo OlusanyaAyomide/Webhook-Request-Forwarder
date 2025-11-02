@@ -26,7 +26,8 @@ export default function Page() {
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
       </div>
-      <SignIn signUpUrl="/sign-up" />
+      <SignIn
+        signUpUrl="/sign-up" />
     </div>
   )
 }

@@ -68,7 +68,7 @@ export function FinalCTA() {
             whileTap={{ scale: 0.95 }}
           >
             <Button
-              className="bg-white text-[#7f22fe] w-[170px] md:w-[200px] hover:bg-gray-100 rounded-xl px-10 py-7 shadow-2xl text-base font-medium"
+              className="bg-white text-[#7f22fe] w-[185px] sm:w-[200px] hover:bg-gray-100 rounded-xl px-10 py-7 shadow-2xl text-base font-medium"
             >
               <ProgressLink href={"/sign-up"}>
                 Get Started Free

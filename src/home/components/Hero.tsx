@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import BaseUrl from "./BaseUrl";
 import Image from "next/image";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function Header({ isVisible }: { isVisible: boolean }) {
   const headerVariants = {
@@ -15,13 +16,13 @@ function Header({ isVisible }: { isVisible: boolean }) {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm"
+      className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg shadow-sm"
       variants={headerVariants}
       initial="hidden"
       animate={isVisible ? "visible" : "hidden"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
         {/* Brand Logo and Name */}
         <div className="flex items-center gap-3">
           <Image
@@ -32,7 +33,7 @@ function Header({ isVisible }: { isVisible: boolean }) {
             width={12}
             unoptimized
           />
-          <span className="text-2xl xl:text-3xl font-bold bg-gradient-to-r from-[#7f22fe] to-[#00d4ff] bg-clip-text text-transparent">
+          <span className="text-2xl max-sm:hidden xl:text-3xl font-bold bg-gradient-to-r from-[#7f22fe] to-[#00d4ff] bg-clip-text text-transparent">
             Echo
           </span>
         </div>
@@ -46,7 +47,7 @@ function Header({ isVisible }: { isVisible: boolean }) {
           </ProgressLink>
           <ProgressLink href={"/sign-up"}>
             <Button
-              className="h-10 px-5"
+              className="h-10 px-3 sm:px-5"
             >
               Sign Up For Free
             </Button>
@@ -88,6 +89,8 @@ export function Hero() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const isMobile = useIsMobile()
 
   return (
     <>
@@ -163,11 +166,11 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-12 border border-purple-100">
-              <div className="flex items-center justify-between gap-8">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-12 border border-purple-100">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
                 {/* Third Party Service */}
                 <motion.div
-                  className="flex-1 text-center"
+                  className="flex-1 text-center w-full md:w-auto"
                   whileHover={{ scale: 1.05 }}
                 >
                   <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
@@ -176,23 +179,23 @@ export function Hero() {
                   <p className="text-sm text-gray-600">Third Party<br />Service</p>
                 </motion.div>
 
-                {/* Animated Arrow */}
+                {/* Animated Arrow - Horizontal on desktop, Vertical on mobile */}
                 <motion.div
-                  className="flex items-center gap-2"
-                  animate={{ x: [0, 10, 0] }}
+                  className="flex flex-col md:flex-row items-center gap-2 md:relative md:bottom-6"
+                  animate={isMobile ? { y: [0, 10, 0] } : { x: [0, 10, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <div className="flex gap-1">
+                  <div className="flex md:flex-row flex-col gap-1">
                     <div className="w-2 h-2 rounded-full bg-[#7f22fe]" />
                     <div className="w-2 h-2 rounded-full bg-[#7f22fe]" />
                     <div className="w-2 h-2 rounded-full bg-[#7f22fe]" />
                   </div>
-                  <ArrowRight className="w-6 h-6 text-[#7f22fe]" />
+                  <ArrowRight className="w-6 h-6 text-[#7f22fe] md:rotate-0 rotate-90" />
                 </motion.div>
 
                 {/* Our App */}
                 <motion.div
-                  className="flex-1 text-center"
+                  className="flex-1 text-center w-full md:w-auto"
                   whileHover={{ scale: 1.05 }}
                 >
                   <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#7f22fe] to-[#00d4ff] flex items-center justify-center shadow-lg">
@@ -203,23 +206,23 @@ export function Hero() {
                   <p className="text-sm text-gray-600">Your Webhook<br />URL</p>
                 </motion.div>
 
-                {/* Animated Arrow */}
+                {/* Animated Arrow - Horizontal on desktop, Vertical on mobile */}
                 <motion.div
-                  className="flex items-center gap-2"
-                  animate={{ x: [0, 10, 0] }}
+                  className="flex flex-col md:flex-row items-center gap-2  md:relative md:bottom-6"
+                  animate={isMobile ? { y: [0, 10, 0] } : { x: [0, 10, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
                 >
-                  <div className="flex gap-1">
+                  <div className="flex md:flex-row flex-col gap-1">
                     <div className="w-2 h-2 rounded-full bg-[#00d4ff]" />
                     <div className="w-2 h-2 rounded-full bg-[#00d4ff]" />
                     <div className="w-2 h-2 rounded-full bg-[#00d4ff]" />
                   </div>
-                  <ArrowRight className="w-6 h-6 text-[#00d4ff]" />
+                  <ArrowRight className="w-6 h-6 text-[#00d4ff] md:rotate-0 rotate-90" />
                 </motion.div>
 
                 {/* Your Endpoint */}
                 <motion.div
-                  className="flex-1 text-center"
+                  className="flex-1 text-center w-full md:w-auto"
                   whileHover={{ scale: 1.05 }}
                 >
                   <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg">

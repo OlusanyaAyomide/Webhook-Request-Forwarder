@@ -13,7 +13,7 @@ const highlights = [
 export function TechnicalHighlights() {
   return (
     <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto md:px-6">
         <div className="text-center mb-16">
           <h2 className="mb-4">Built for Developers</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -24,7 +24,7 @@ export function TechnicalHighlights() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left - Features list */}
           <motion.div
-            className="space-y-6"
+            className="space-y-6 max-md:px-6"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -76,7 +76,7 @@ export function TechnicalHighlights() {
               </div>
 
               {/* Code content */}
-              <div className="p-6 overflow-x-auto">
+              <div className="p-6 overflow-x-auto max-md:max-w-[88vw]">
                 <pre className="text-sm leading-relaxed">
                   <code>
                     <span className="text-purple-400">const</span>{" "}
@@ -119,7 +119,7 @@ export function TechnicalHighlights() {
             </div>
 
             {/* Info badges */}
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3 max-md:px-6">
               <div className="flex items-center gap-2 bg-purple-50 border border-purple-200 rounded-lg px-4 py-2">
                 <Zap className="w-4 h-4 text-[#7f22fe]" />
                 <span className="text-sm text-gray-700">0ms latency</span>

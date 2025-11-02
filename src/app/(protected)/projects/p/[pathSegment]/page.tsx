@@ -28,6 +28,7 @@ import { ProgressLink } from "@/components/protected/ProgressLink";
 import { getProjectStats } from "./stat.actions";
 import { RequestLogsFilter } from "@/components/protected/RequestLogsFilter";
 import WebhookBaseUrl from "@/home/components/WebhookBaseUrl";
+import LocalTime from "@/components/protected/LocalTime";
 
 export const dynamic = "force-dynamic";
 
@@ -222,11 +223,7 @@ export default async function ProjectDetailPage({
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
             <p className="text-muted-foreground mt-1">
-              Created {project.createdAt.toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
+              <span className="mr-1">Created</span> <LocalTime dateString={project.createdAt} />
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -331,13 +328,7 @@ export default async function ProjectDetailPage({
                       className="even:bg-[var(--accent)] border-b-[var(--primary)]/20 transition-colors hover:bg-[var(--muted)]/50"
                     >
                       <TableCell className="text-sm">
-                        {new Date(log.createdAt).toLocaleString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit'
-                        })}
+                        <LocalTime dateString={log.createdAt} />
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="font-mono">

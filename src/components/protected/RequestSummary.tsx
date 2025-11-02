@@ -4,6 +4,7 @@ import { RequestLog } from "@prisma/client";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 import { useEffect, useState } from "react";
+import LocalTime from "./LocalTime";
 
 
 
@@ -21,11 +22,6 @@ export const getStatusBadge = (status: number) => {
 export default function RequestSummary({ log }: { log: RequestLog }) {
   const event = log.incomingPath?.split("/")[1] || "webhook";
 
-  const [isMounted, setIsMounted] = useState(false)
-  useEffect(() => {
-    if (isMounted) return;
-    setIsMounted(true)
-  }, [isMounted])
 
   return (
     <Card className="p-6 border border-[var(--muted)]">
@@ -47,11 +43,7 @@ export default function RequestSummary({ log }: { log: RequestLog }) {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">Timestamp</p>
-          {
-            isMounted && (
-              <p className="text-foreground">{log.createdAt.toLocaleString()}</p>
-            )
-          }
+          <LocalTime dateString={log.createdAt} />
         </div>
         <div>
           <p className="text-muted-foreground mb-1">Duration</p>

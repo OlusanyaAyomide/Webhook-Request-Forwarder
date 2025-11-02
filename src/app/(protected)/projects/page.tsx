@@ -12,6 +12,7 @@ import { Plus, Eye } from "lucide-react";
 import Pagination from "@/components/protected/Pagination";
 import { currentUser } from "@clerk/nextjs/server";
 import { ProgressLink } from "@/components/protected/ProgressLink";
+import LocalTime from "@/components/protected/LocalTime";
 
 export const dynamic = "force-dynamic";
 
@@ -105,11 +106,7 @@ export default async function DashboardPage({
                     </code>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
-                    {new Date(project.createdAt).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
+                    <LocalTime dateString={project.createdAt} />
                   </TableCell>
                   <TableCell className="text-right">
                     <Button
