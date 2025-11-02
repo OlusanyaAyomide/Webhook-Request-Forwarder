@@ -87,13 +87,13 @@ export function MobileWarning() {
           >
             Got it, don&apos;t show again
           </Button>
-          <Button
+          {/* <Button
             onClick={handleContinue}
             className="w-full"
             variant="outline"
           >
             Continue anyway
-          </Button>
+          </Button> */}
         </DialogFooter>
       </DialogContent>
     </Dialog>
