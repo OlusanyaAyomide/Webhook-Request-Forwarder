@@ -27,15 +27,7 @@ export default function RequestDetailPage({ log }: { log: RequestLog }) {
     <div className="container mx-auto py-10 space-y-6">
       <div>
         <div className="flex items-center justify-between mb-4">
-          <Link href="/requests">
-            <Button
-              variant="ghost"
-              className="text-muted-foreground hover:text-foreground -ml-2"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Logs
-            </Button>
-          </Link>
+          <span />
           <Button
             onClick={() => setRetryDialogOpen(true)}
             variant="outline"
